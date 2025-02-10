@@ -220,14 +220,14 @@ public class TabloidDbContext : IdentityDbContext<IdentityUser>
                         Yeah",
                         CategoryId = 5,
                         PublishDate = new DateTime(2025, 2, 8),
-                        ImageUrl = "https://occ-0-8407-114.1.nflxso.net/dnm/api/v6/E8vDc_W8CLv7-yMQu8KMEC7Rrr8/AAAABf_vkYSzY2EsbRFAOJOS3_ZdreU4YoqzdzVZf-f1CEP9ndmI3705aHteXy3ZD7tLH4YbavoJT3lPK9luZDLgQxhQOBw1tLuBzxFG.jpg?r=b99"
+                        ImageUrl = "https://occ-0-8407-114.1.nflxso.net/dnm/api/v6/E8vDc_W8CLv7-yMQu8KMEC7Rrr8/AAAABf_vkYSzY2EsbRFAOJOS3_ZdreU4YoqzdzVZf-f1CEP9ndmI3705aHteXy3ZD7tLH4YbavoJT3lPK9luZDLgQxhQOBw1tLuBzxFG.jpg?r=b99",
                         Approved = true
             }
         });
         modelBuilder.Entity<PostReaction>().HasData(new PostReaction[]
         {
             new PostReaction { Id = 1, UserId = 2, PostId = 1, ReactionId = 4 },
-            new PostReaction { Id = 2, UserId = 3, PostId = 1, ReacitonId = 3} 
+            new PostReaction { Id = 2, UserId = 3, PostId = 1, ReactionId = 3} 
         });
         modelBuilder.Entity<PostTag>().HasData(new PostTag[]
         {
@@ -263,5 +263,20 @@ public class TabloidDbContext : IdentityDbContext<IdentityUser>
             .HasOne(pt => pt.Post)
             .WithMany(p => p.PostTags)
             .OnDelete(DeleteBehavior.Cascade);
+
+        //Cascade Delete for Post and PostReactions
+        modelBuilder
+            .Entity<PostReaction>()
+            .HasOne(pr => pr.Post)
+            .WithMany(p => p.PostReactions)
+            .OnDelete(DeleteBehavior.Cascade);
+
+            //Cascade Delete for Comments on a Post
+        modelBuilder
+            .Entity<Comment>()
+            .HasOne(c => c.Post)
+            .WithMany(p => p.Comments)
+            .OnDelete(DeleteBehavior.Cascade);
+            
     }
 }
