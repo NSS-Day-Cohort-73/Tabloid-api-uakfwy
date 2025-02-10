@@ -2,6 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Tabloid.Models;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Authorization.Infrastructure;
 
 namespace Tabloid.Data;
 public class TabloidDbContext : IdentityDbContext<IdentityUser>
@@ -9,6 +10,14 @@ public class TabloidDbContext : IdentityDbContext<IdentityUser>
     private readonly IConfiguration _configuration;
 
     public DbSet<UserProfile> UserProfiles { get; set; }
+    public DbSet<Reaction> Reactions { get; set; }
+    public DbSet<Tag> Tags { get; set; }
+    public DbSet<Category> Categories { get; set; }
+    public DbSet<Post> Posts { get; set; }
+    public DbSet<PostReaction> PostReactions { get; set; }
+    public DbSet<PostTag> PostTags { get; set; }
+    public DbSet<Comment> Comments { get; set; }
+    public DbSet<Subscription> Subscriptions { get; set; }
 
 
     public TabloidDbContext(DbContextOptions<TabloidDbContext> context, IConfiguration config) : base(context)
@@ -20,12 +29,20 @@ public class TabloidDbContext : IdentityDbContext<IdentityUser>
     {
         base.OnModelCreating(modelBuilder);
 
-        modelBuilder.Entity<IdentityRole>().HasData(new IdentityRole
-        {
-            Id = "c3aaeb97-d2ba-4a53-a521-4eea61e59b35",
-            Name = "Admin",
-            NormalizedName = "admin"
-        });
+        modelBuilder.Entity<IdentityRole>()
+        .HasData(
+            new IdentityRole
+            {
+                Id = "c3aaeb97-d2ba-4a53-a521-4eea61e59b35",
+                Name = "Admin",
+                NormalizedName = "admin"
+            },
+            new IdentityRole
+            {
+                Id = "c3aaeb97-d2ba-4a53-a521-4eea61e59b35",
+                Name = "Author",
+                NormalizedName = "author"
+            });
 
         modelBuilder.Entity<IdentityUser>().HasData(new IdentityUser[]
         {
@@ -86,6 +103,11 @@ public class TabloidDbContext : IdentityDbContext<IdentityUser>
                 RoleId = "c3aaeb97-d2ba-4a53-a521-4eea61e59b35",
                 UserId = "d8d76512-74f1-43bb-b1fd-87d3a8aa36df"
             },
+            new IdentityUserRole<string>
+            {
+                RoleId = "c3aaeb97-d2ba-4a53-a521-4eea61e59b35",
+                UserId = "a7d21fac-3b21-454a-a747-075f072d0cf3"
+            }
 
         });
         modelBuilder.Entity<UserProfile>().HasData(new UserProfile[]
@@ -145,5 +167,101 @@ public class TabloidDbContext : IdentityDbContext<IdentityUser>
                 IdentityUserId = "d224a03d-bf0c-4a05-b728-e3521e45d74d",
             }
         });
+        modelBuilder.Entity<Reaction>().HasData(new Reaction[]
+        {
+            new Reaction { Id = 1, Name = "Like", Icon = "👍" },
+            new Reaction { Id = 2, Name = "Love", Icon = "😘" },
+            new Reaction { Id = 3, Name = "Hate", Icon = "🤬" },
+            new Reaction { Id = 4, Name = "Foolish", Icon = "🤡" }
+        });
+        modelBuilder.Entity<Tag>().HasData(new Tag[]
+        {
+            new Tag { Id = 1, TagName = "#Tech" },
+            new Tag { Id = 2, TagName = "#Movies" },
+            new Tag { Id = 3, TagName = "#Gaming" },
+            new Tag { Id = 4, TagName = "#Travel" },
+            new Tag { Id = 5, TagName = "#Cooking" },
+            new Tag { Id = 6, TagName = "#HotTake"}
+        });
+        modelBuilder.Entity<Category>().HasData(new Category[]
+        {
+            new Category { Id = 1, CategoryName = "Satire" },
+            new Category { Id = 2, CategoryName = "Entertainment" },
+            new Category { Id = 3, CategoryName = "Sports" },
+            new Category { Id = 4, CategoryName = "Informative" },
+            new Category { Id = 5, CategoryName = "Debate & Discussion" }
+        });
+        modelBuilder.Entity<Post>().HasData(new Post[]
+        {
+            new Post
+            {
+                Id = 1,
+                UserId = 1,
+                Title = "I Want To Be",
+                SubTitle = "The Very Best",
+                Body = @"Like no one ever was
+                        To catch them is my real test
+                        To train them is my cause
+                        I will travel across the land
+                        Searching far and wide
+                        Teach Pokémon to understand
+                        The power that's inside
+
+                        (Pokémon
+                        Gotta catch 'em all) It's you and me
+                        I know it's my destiny (Pokémon)
+                        Oh, you're my best friend
+                        In a world we must defend (Pokémon
+                        Gotta catch 'em all) A heart so true
+                        Our courage will pull us through
+                        You teach me and I'll teach you (Ooh, ooh)
+                        Pokémon! (Gotta catch 'em all)
+                        Gotta catch 'em all
+                        Yeah",
+                        CategoryId = 5,
+                        PublishDate = new DateTime(2025, 2, 8),
+                        ImageUrl = "https://occ-0-8407-114.1.nflxso.net/dnm/api/v6/E8vDc_W8CLv7-yMQu8KMEC7Rrr8/AAAABf_vkYSzY2EsbRFAOJOS3_ZdreU4YoqzdzVZf-f1CEP9ndmI3705aHteXy3ZD7tLH4YbavoJT3lPK9luZDLgQxhQOBw1tLuBzxFG.jpg?r=b99"
+                        Approved = true
+            }
+        });
+        modelBuilder.Entity<PostReaction>().HasData(new PostReaction[]
+        {
+            new PostReaction { Id = 1, UserId = 2, PostId = 1, ReactionId = 4 },
+            new PostReaction { Id = 2, UserId = 3, PostId = 1, ReacitonId = 3} 
+        });
+        modelBuilder.Entity<PostTag>().HasData(new PostTag[]
+        {
+            new PostTag { Id = 1, PostId = 1, TagId = 6 },
+            new PostTag { Id = 2, PostId = 2, TagId = 3 }
+        });
+        modelBuilder.Entity<Comment>().HasData(new Comment[]
+        {
+            new Comment
+            {
+                Id = 1,
+                PostId = 1,
+                UserId = 2,
+                Body = "Digimon is better #Tai&Augumon",
+                DateSubmitted = new DateTime(2025, 2, 9)
+            }
+        });
+        modelBuilder.Entity<Subscription>().HasData(new Subscription[]
+        {
+            new Subscription { Id = 1, AuthorId = 1, SubscriberId = 2, BeginDate = new DateTime(2025, 2, 9) }
+        });
+ 
+        //Configure the one-to-many relationship between Tags and PostTags (Cascade Delete)
+        modelBuilder
+            .Entity<PostTag>()
+            .HasOne(pt => pt.Tag)
+            .WithMany(t => t.PostTags)
+            .OnDelete(DeleteBehavior.Cascade);
+
+
+        modelBuilder
+            .Entity<PostTag>()
+            .HasOne(pt => pt.Post)
+            .WithMany(p => p.PostTags)
+            .OnDelete(DeleteBehavior.Cascade);
     }
 }
