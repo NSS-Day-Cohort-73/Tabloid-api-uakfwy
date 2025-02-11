@@ -2,12 +2,16 @@ import { useEffect, useState } from "react";
 import {
   getAllCategories,
   postNewCategory,
+  updateCategory,
 } from "../../managers/categoryManager";
 import { Table } from "reactstrap";
 
 export default function CategoryList() {
   const [categories, setCategories] = useState([]);
   const [newCategory, setNewCategory] = useState("");
+  const [currentEditingCategoryId, setCurrentEditingCategoryId] =
+    useState(null);
+  const [editingCategoryName, setEditingCategoryName] = useState("");
 
   useEffect(() => {
     getAllCategories()
@@ -20,9 +24,40 @@ export default function CategoryList() {
     console.log(`delete ${catId}`);
   };
 
-  //CONSOLE LOG FOR NOW
-  const editCategory = (catId) => {
-    console.log(`edit ${catId}`);
+  const editCategory = (catId, currentName) => {
+    setEditingCategoryName(currentName);
+    setCurrentEditingCategoryId(catId);
+  };
+
+  const cancelEditCategory = () => {
+    setEditingCategoryName("");
+    setCurrentEditingCategoryId(null);
+  };
+
+  const postEditedCategory = (categoryId) => {
+    const trimmedCat = editingCategoryName.trim();
+
+    if (!trimmedCat) {
+      window.alert("Please enter a category name before submitting");
+      return;
+    }
+
+    if (trimmedCat.length < 3) {
+      window.alert("A category name must be at least 3 characters long");
+      return;
+    }
+
+    const categoryToSend = {
+      categoryName: trimmedCat,
+    };
+
+    updateCategory(categoryId, categoryToSend)
+      .then(() => {
+        setEditingCategoryName("");
+        setCurrentEditingCategoryId(null);
+        return getAllCategories();
+      })
+      .then((c) => setCategories(c));
   };
 
   const submitNewCategory = () => {
@@ -57,21 +92,47 @@ export default function CategoryList() {
             key={c.id}
             className="border rounded p-3 w-50 shadow-sm d-flex justify-content-between align-items-center"
           >
-            {c.categoryName}
-            <div className="d-flex gap-2">
-              <button
-                className="border rounded"
-                onClick={() => editCategory(c.id)}
-              >
-                ✍️
-              </button>
-              <button
-                className="border rounded"
-                onClick={() => deleteCategory(c.id)}
-              >
-                🗑️
-              </button>
-            </div>
+            {currentEditingCategoryId === c.id ? (
+              <div className="d-flex gap-2">
+                <input
+                  className="w-75"
+                  value={editingCategoryName}
+                  onChange={(e) => setEditingCategoryName(e.target.value)}
+                />
+                <div className="d-flex gap-2">
+                  <button
+                    className="border rounded"
+                    onClick={cancelEditCategory}
+                  >
+                    ❌
+                  </button>
+                  <button
+                    className="border rounded"
+                    onClick={() => postEditedCategory(c.id)}
+                  >
+                    ✅
+                  </button>
+                </div>
+              </div>
+            ) : (
+              <>
+                {c.categoryName}
+                <div className="d-flex gap-2">
+                  <button
+                    className="border rounded"
+                    onClick={() => editCategory(c.id, c.categoryName)}
+                  >
+                    ✍️
+                  </button>
+                  <button
+                    className="border rounded"
+                    onClick={() => deleteCategory(c.id)}
+                  >
+                    🗑️
+                  </button>
+                </div>
+              </>
+            )}
           </div>
         ))}
         <div className="d-flex gap-2">

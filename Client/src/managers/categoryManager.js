@@ -11,3 +11,11 @@ export const postNewCategory = (category) => {
     body: JSON.stringify(category),
   }).then((res) => res.json());
 };
+
+export const updateCategory = (categoryId, catObj) => {
+  return fetch(`${_apiUrl}/${categoryId}`, {
+    method: "PUT",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(catObj),
+  });
+};
