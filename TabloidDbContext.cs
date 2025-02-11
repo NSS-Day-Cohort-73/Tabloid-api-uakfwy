@@ -39,7 +39,7 @@ public class TabloidDbContext : IdentityDbContext<IdentityUser>
             },
             new IdentityRole
             {
-                Id = "c3aaeb97-d2ba-4a53-a521-4eea61e59b35",
+                Id = "8f7d3b2e-9c1a-4f6d-b5e8-a2d9c6f7m4n3",
                 Name = "Author",
                 NormalizedName = "author"
             });
@@ -232,7 +232,7 @@ public class TabloidDbContext : IdentityDbContext<IdentityUser>
         modelBuilder.Entity<PostTag>().HasData(new PostTag[]
         {
             new PostTag { Id = 1, PostId = 1, TagId = 6 },
-            new PostTag { Id = 2, PostId = 2, TagId = 3 }
+            new PostTag { Id = 2, PostId = 1, TagId = 3 }
         });
         modelBuilder.Entity<Comment>().HasData(new Comment[]
         {
