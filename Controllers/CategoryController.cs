@@ -24,11 +24,8 @@ public class CategoryController : ControllerBase
     {
         return Ok(
             _dbContext
-                .Categories.Select(cat => new CategoryDTO
-                {
-                    Id = cat.Id,
-                    CategoryName = cat.CategoryName,
-                })
+                .Categories.OrderBy(c => c.Id)
+                .Select(cat => new CategoryDTO { Id = cat.Id, CategoryName = cat.CategoryName })
                 .ToList()
         );
     }
