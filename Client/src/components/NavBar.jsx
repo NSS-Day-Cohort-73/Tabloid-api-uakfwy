@@ -19,7 +19,7 @@ export default function NavBar({ loggedInUser, setLoggedInUser }) {
 
   return (
     <div>
-      <Navbar color="light" light fixed="true" expand="lg">
+      <Navbar color="dark" dark fixed="true" expand="lg">
         <NavbarBrand className="mr-auto" tag={RRNavLink} to="/">
           ✍️ Tabloid
         </NavbarBrand>
@@ -28,28 +28,67 @@ export default function NavBar({ loggedInUser, setLoggedInUser }) {
             <NavbarToggler onClick={toggleNavbar} />
             <Collapse isOpen={open} navbar>
               <Nav navbar>
+                <NavItem>
+                  <NavLink tag={RRNavLink} to="/">
+                    Home
+                  </NavLink>
+                </NavItem>
+                <NavItem>
+                  <NavLink tag={RRNavLink} to="/explore">
+                    Explore
+                  </NavLink>
+                </NavItem>
+                <NavItem>
+                  <NavLink tag={RRNavLink} to="/subscribed">
+                    Subscribed Posts
+                  </NavLink>
+                </NavItem>
+                <NavItem>
+                  <NavLink tag={RRNavLink} to="/myposts">
+                    My Posts
+                  </NavLink>
+                </NavItem>
                 {loggedInUser.roles.includes("Admin") && (
-                  <NavItem>
-                    <NavLink tag={RRNavLink} to="/userprofiles">
-                      User Profiles
-                    </NavLink>
-                  </NavItem>
+                  <>
+                    <NavItem>
+                      <NavLink tag={RRNavLink} to="/userprofiles">
+                        User Profiles
+                      </NavLink>
+                    </NavItem>
+                    <NavItem>
+                      <NavLink tag={RRNavLink} to="/categories">
+                        Categories
+                      </NavLink>
+                    </NavItem>
+                    <NavItem>
+                      <NavLink tag={RRNavLink} to="/tags">
+                        Tags
+                      </NavLink>
+                    </NavItem>
+                  </>
                 )}
               </Nav>
             </Collapse>
-            <Button
-              color="primary"
-              onClick={(e) => {
-                e.preventDefault();
-                setOpen(false);
-                logout().then(() => {
-                  setLoggedInUser(null);
-                  setOpen(false);
-                });
-              }}
-            >
-              Logout
-            </Button>
+            <Nav className="ms-auto d-flex flex-row align-items-center gap-3">
+              <NavItem>
+                <span className="text-light">Welcome, {loggedInUser.name || loggedInUser.userName || 'User'}</span>
+              </NavItem>
+              <NavItem>
+                <Button
+                  color="primary"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    setOpen(false);
+                    logout().then(() => {
+                      setLoggedInUser(null);
+                      setOpen(false);
+                    });
+                  }}
+                >
+                  Logout
+                </Button>
+              </NavItem>
+            </Nav>
           </>
         ) : (
           <Nav navbar>
