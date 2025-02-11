@@ -58,4 +58,20 @@ public class CategoryController : ControllerBase
 
         return NoContent();
     }
+
+    [HttpDelete("{id}")]
+    [Authorize]
+    public IActionResult DeleteCategory(int id)
+    {
+        Category categoryToDelete = _dbContext.Categories.SingleOrDefault(c => c.Id == id);
+
+        if (categoryToDelete == null)
+        {
+            return NotFound();
+        }
+
+        _dbContext.Remove(categoryToDelete);
+        _dbContext.SaveChanges();
+        return NoContent();
+    }
 }

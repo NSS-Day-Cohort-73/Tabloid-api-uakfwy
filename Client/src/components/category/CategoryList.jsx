@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import {
+  deleteTheDamnCategory,
   getAllCategories,
   postNewCategory,
   updateCategory,
@@ -21,7 +22,22 @@ export default function CategoryList() {
 
   //CONSOLE LOG FOR NOW
   const deleteCategory = (catId) => {
-    console.log(`delete ${catId}`);
+    if (window.confirm("Are you sure you want to delete this category?")) {
+      deleteTheDamnCategory(catId)
+        .then((res) => {
+          if (!res.ok) {
+            throw new Error("failed to delete category");
+          }
+          return getAllCategories();
+        })
+        .then((c) => {
+          setCategories(c);
+        })
+        .catch((error) => {
+          console.error("Error deleting category:", error);
+          window.alert("Failed to delete category. Please try again.");
+        });
+    }
   };
 
   const editCategory = (catId, currentName) => {

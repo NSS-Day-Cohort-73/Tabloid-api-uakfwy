@@ -19,3 +19,10 @@ export const updateCategory = (categoryId, catObj) => {
     body: JSON.stringify(catObj),
   });
 };
+
+export const deleteTheDamnCategory = (catId) => {
+  return fetch(`${_apiUrl}/${catId}`, {
+    method: "DELETE",
+    headers: { "Content-Type": "application/json" },
+  });
+};
