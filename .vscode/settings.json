@@ -1,0 +1,11 @@
+{
+  "terminal.integrated.env.windows": {
+    "DOTNET_PROJECT": "${workspaceFolder}/Tabloid.csproj"
+  },
+  "terminal.integrated.env.linux": {
+    "DOTNET_PROJECT": "${workspaceFolder}/Tabloid.csproj"
+  },
+  "terminal.integrated.env.osx": {
+    "DOTNET_PROJECT": "${workspaceFolder}/Tabloid.csproj"
+  }
+}

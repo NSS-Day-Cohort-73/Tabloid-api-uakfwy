@@ -6,7 +6,7 @@ public class CommentDTO
 {
     public int Id { get; set; }
     public int PostId { get; set; }
-    public int UserId { get; set; }
+    public int UserProfileId { get; set; }
 
     [Required]
     [MaxLength(250)]
@@ -14,5 +14,5 @@ public class CommentDTO
     public DateTime DateSubmitted { get; set; }
 
     public PostDTO Post { get; set; }
-    public UserProfileDTO User { get; set; }
+    public UserProfileDTO UserProfile { get; set; }
 }

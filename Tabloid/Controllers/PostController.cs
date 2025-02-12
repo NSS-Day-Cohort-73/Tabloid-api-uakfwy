@@ -110,4 +110,83 @@ public class PostController : ControllerBase
         }
         
     }
+
+    [HttpGet("{id}")]
+    [Authorize]
+    public IActionResult GetById(int id)
+    {
+        Post post = _dbContext
+        .Posts
+        .Include(p => p.Category)
+        .Include(p => p.Comments)
+        .Include(p => p.PostReactions)
+            .ThenInclude(pr => pr.Reaction)
+        .Include(p => p.PostTags)
+            .ThenInclude(pt => pt.Tag)
+        .Include(p => p.User)
+            .ThenInclude(u => u.IdentityUser)
+        .SingleOrDefault(p => p.Id == id);
+
+        if (post == null)
+        {
+            return NotFound("That post doesn't exist");
+        }
+
+        return Ok(new PostDTO
+        {
+            Id = post.Id,
+            UserId = post.UserId,
+            User = new UserProfileDTO
+            {
+                Id = post.UserId,
+                FirstName = post.User.FirstName,
+                LastName = post.User.LastName,
+                UserName = post.User.IdentityUser.UserName
+            },
+            Title = post.Title,
+            SubTitle = post.SubTitle != null ? post.SubTitle : null,
+            Body = post.Body,
+            CategoryId = post.CategoryId != null ? post.CategoryId : null,
+            Category = post.CategoryId != null ? new CategoryDTO
+            {
+                Id = post.Category.Id,
+                CategoryName = post.Category.CategoryName
+            } : null,
+            PublishDate = post.PublishDate,
+            PostTags = post.PostTags.Select(pt => new PostTagDTO
+            {
+                Id = pt.Id,
+                Tag = new TagDTO
+                {
+                    Id = pt.Tag.Id,
+                    TagName = pt.Tag.TagName
+                }
+            }).ToList(),
+            Comments = post.Comments != null && post.Comments.Any() 
+                ? post.Comments
+                    .Where(c => c != null)
+                    .Select(c => new CommentDTO
+            {
+                Id = c.Id,
+                UserProfileId = c.UserProfileId,
+                UserProfile = new UserProfileDTO
+                {
+                    UserName = c.UserProfile.IdentityUser.UserName
+                },
+                Body = c.Body,
+                DateSubmitted = c.DateSubmitted
+            }).ToList() : null,
+            PostReactions = post.PostReactions.Select(pr => new PostReactionDTO
+            {
+                Id = pr.Id,
+                UserProfileId = pr.UserProfileId,
+                UserProfile = new UserProfileDTO
+                {
+                    Id = pr.UserProfileId,
+                    UserName = pr.UserProfile.IdentityUser.UserName
+                },
+                ReactionId = pr.ReactionId,
+            }).ToList()
+        });
+    }
 }
