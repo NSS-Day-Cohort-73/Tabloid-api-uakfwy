@@ -4,6 +4,7 @@ import Login from "./auth/Login";
 import Register from "./auth/Register";
 import UserProfileList from "./userprofiles/UserProfilesList";
 import UserProfileDetails from "./userprofiles/UserProfileDetails";
+import TagList from "./tags/TagList";
 import CategoryList from "./category/CategoryList";
 import { AllPosts } from "./posts/AllPosts";
 
@@ -46,6 +47,16 @@ export default function ApplicationViews({ loggedInUser, setLoggedInUser }) {
               </AuthorizedRoute>
             }
           />
+        </Route>
+        <Route path="/tags">
+            <Route
+              index
+              element={
+                <AuthorizedRoute loggedInUser={loggedInUser} roles={["Admin"]}>
+                  <TagList />
+                </AuthorizedRoute>
+              }
+          />    
         </Route>
         <Route
           path="login"
