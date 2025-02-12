@@ -5,7 +5,7 @@ namespace Tabloid.Models.DTOs;
 public class PostDTO
 {
     public int Id { get; set; }
-    public int UserId { get; set; }
+    public int UserProfileId { get; set; }
 
     [Required]
     [MaxLength(70)]
@@ -26,7 +26,7 @@ public class PostDTO
 
     [DataType(DataType.Url)]
     public string ImageUrl { get; set; }
-    public UserProfileDTO User { get; set; }
+    public UserProfileDTO UserProfile { get; set; }
     public CategoryDTO Category { get; set; }
     public List<PostTagDTO> PostTags { get; set; }
     public List<CommentDTO> Comments { get; set; }

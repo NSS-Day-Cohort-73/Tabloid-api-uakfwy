@@ -71,8 +71,8 @@ public class PostController : ControllerBase
         .Select(p => new PostDTO
         {
             Id = p.Id,
-            UserId = p.UserProfileId,
-            User = new UserProfileDTO
+            UserProfileId = p.UserProfileId,
+            UserProfile = new UserProfileDTO
             {
                 Id = p.UserProfileId,
                 FirstName = p.UserProfile.FirstName,
@@ -109,5 +109,108 @@ public class PostController : ControllerBase
             return StatusCode(500, $"An error occurred while processing your request {ex.Message}");
         }
         
+    }
+
+    [HttpGet("{id}")]
+    [Authorize]
+    public IActionResult GetById(int id)
+    {
+        try 
+        {
+        Post post = _dbContext
+        .Posts
+        .Include(p => p.Comments)
+            .ThenInclude(c => c.UserProfile)
+                .ThenInclude(up => up.IdentityUser)
+        .Include(p => p.Category)
+        .Include(p => p.PostTags)
+            .ThenInclude(pt => pt.Tag)
+        .Include(p => p.PostReactions)
+            .ThenInclude(pr => pr.Reaction)
+        .Include(p => p.PostReactions)
+            .ThenInclude(pr => pr.UserProfile)
+                .ThenInclude(up => up.IdentityUser)
+        .Include(p => p.UserProfile)
+            .ThenInclude(up => up.IdentityUser)
+        .SingleOrDefault(p => p.Id == id);
+
+        if (post == null)
+        {
+            return NotFound("Post not found");
+        } 
+        else if (id <= 0)
+        {
+            return BadRequest("Id needs to be a positive integer");
+        }
+    Console.WriteLine($"PostReactions count: {post.PostReactions?.Count()}"); // Debugging line
+
+        return Ok(new PostDTO
+        {
+            Id = post.Id,
+            UserProfileId = post.UserProfileId,
+            UserProfile = new UserProfileDTO
+            {
+                Id = post.UserProfile.Id,
+                UserName = post.UserProfile.IdentityUser.UserName,
+                ImageLocation = post.UserProfile.ImageLocation
+            },
+            Title = post.Title,
+            SubTitle = post.SubTitle != null ? post.SubTitle : null,
+            Body = post.Body,
+            CategoryId = post.CategoryId != null ? post.CategoryId : null,
+            Category = post.CategoryId != null ? new CategoryDTO
+            {
+                Id = post.Category.Id,
+                CategoryName = post.Category.CategoryName
+            } : null,
+            PostTags = post.PostTags != null ? post.PostTags.Select(pt => new PostTagDTO
+            {
+                Id = pt.Id,
+                TagId = pt.TagId,
+                Tag = new TagDTO
+                {
+                    Id = pt.Tag.Id,
+                    TagName = pt.Tag.TagName
+                }
+            }).ToList() : null,
+            Comments = post.Comments != null ? post.Comments.Select(c => new CommentDTO
+            {
+                Id = c.Id,
+                UserProfileId = c.UserProfileId,
+                UserProfile = new UserProfileDTO
+                {
+                    Id = c.UserProfile.Id,
+                    UserName = c.UserProfile.IdentityUser.UserName
+                },
+                Body = c.Body,
+                DateSubmitted = c.DateSubmitted
+            }).ToList() : null,
+            PublishDate = post.PublishDate,
+            ImageUrl = post.ImageUrl != null ?  post.ImageUrl : null,
+            PostReactions = post.PostReactions != null ? post.PostReactions.Select(pr => new PostReactionDTO
+            {
+                Id = pr.Id,
+                PostId = pr.PostId,
+                UserProfileId = pr.UserProfileId,
+                UserProfile = new UserProfileDTO
+                 {
+                    Id = pr.UserProfile.Id,
+                    UserName = pr.UserProfile.IdentityUser.UserName
+                 },
+                ReactionId = pr.ReactionId,
+                Reaction = new ReactionDTO
+                {
+                    Id = pr.Reaction.Id,
+                    Name = pr.Reaction.Name,
+                    Icon = pr.Reaction.Icon
+                }
+            }).ToList() : null
+        });
+        }
+        catch (Exception ex)
+        {
+           return StatusCode(500, $"An error occurred while processing your request {ex.Message}"); 
+        }
+
     }
 }
