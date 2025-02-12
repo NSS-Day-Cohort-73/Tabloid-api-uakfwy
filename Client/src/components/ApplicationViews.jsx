@@ -5,6 +5,8 @@ import Register from "./auth/Register";
 import UserProfileList from "./userprofiles/UserProfilesList";
 import UserProfileDetails from "./userprofiles/UserProfileDetails";
 import TagList from "./tags/TagList";
+import CategoryList from "./category/CategoryList";
+import { AllPosts } from "./posts/AllPosts";
 
 export default function ApplicationViews({ loggedInUser, setLoggedInUser }) {
   return (
@@ -14,10 +16,20 @@ export default function ApplicationViews({ loggedInUser, setLoggedInUser }) {
           index
           element={
             <AuthorizedRoute loggedInUser={loggedInUser}>
-              <p>Welcome to Tabloid!</p>
+              <AllPosts />
             </AuthorizedRoute>
           }
         />
+        <Route path="/posts">
+          <Route
+            path=":id"
+            element={
+              <AuthorizedRoute loggedInUser={loggedInUser}>
+                Post Details
+              </AuthorizedRoute>
+            }
+          />
+        </Route>
         <Route path="/userprofiles">
           <Route
             index
@@ -54,6 +66,7 @@ export default function ApplicationViews({ loggedInUser, setLoggedInUser }) {
           path="register"
           element={<Register setLoggedInUser={setLoggedInUser} />}
         />
+        <Route path="categories" element={<CategoryList />} />
       </Route>
       <Route path="*" element={<p>Whoops, nothing here...</p>} />
     </Routes>
