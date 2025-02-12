@@ -38,3 +38,12 @@ export const getAllPosts = async (
     return null;
   }
 };
+
+export const getPostById = async (postId) => {
+  const response = await fetch(`${apiString}/${postId}`);
+
+  if (!response.ok) {
+    throw new Error(`HTTP error! Status ${response.status}`);
+  }
+  return response.json();
+};

@@ -12,3 +12,50 @@
   border-left: 1px solid black;
   padding: 1.5rem;
 }
+
+.post-details-header {
+  background-color: #e9e9e9;
+  width: 100%;
+}
+
+.container {
+  width: 100%;
+  max-width: 100%;
+}
+
+.post-header-image {
+  display: block;
+  width: 50%;
+  height: auto;
+  max-height: 300px;
+  margin-left: auto;
+  margin-right: auto;
+}
+.post-details-card-header {
+  text-align: center;
+}
+
+.post-details-title {
+  color: #343a40;
+}
+.post-details-category {
+  color: #db534b;
+}
+
+.post-details-author-image {
+  display: block;
+  width: 5%;
+  height: 40%;
+  margin-bottom: 1.5rem;
+}
+
+.post-details-info {
+  width: 60%;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.post-details-body {
+  width: 70%;
+  margin: 0 auto;
+}
