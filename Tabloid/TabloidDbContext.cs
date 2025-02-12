@@ -226,8 +226,8 @@ public class TabloidDbContext : IdentityDbContext<IdentityUser>
         });
         modelBuilder.Entity<PostReaction>().HasData(new PostReaction[]
         {
-            new PostReaction { Id = 1, UserId = 2, PostId = 1, ReactionId = 4 },
-            new PostReaction { Id = 2, UserId = 3, PostId = 1, ReactionId = 3} 
+            new PostReaction { Id = 1, UserProfileId = 2, PostId = 1, ReactionId = 4 },
+            new PostReaction { Id = 2, UserProfileId = 3, PostId = 1, ReactionId = 3} 
         });
         modelBuilder.Entity<PostTag>().HasData(new PostTag[]
         {
@@ -240,7 +240,7 @@ public class TabloidDbContext : IdentityDbContext<IdentityUser>
             {
                 Id = 1,
                 PostId = 1,
-                UserId = 2,
+                UserProfileId = 2,
                 Body = "Digimon is better #Tai&Augumon",
                 DateSubmitted = new DateTime(2025, 2, 9)
             }

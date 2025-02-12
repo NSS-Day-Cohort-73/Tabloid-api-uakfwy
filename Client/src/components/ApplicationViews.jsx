@@ -5,6 +5,7 @@ import Register from "./auth/Register";
 import UserProfileList from "./userprofiles/UserProfilesList";
 import UserProfileDetails from "./userprofiles/UserProfileDetails";
 import { AllPosts } from "./posts/AllPosts";
+import { PostDetails } from "./posts/PostDetails";
 
 export default function ApplicationViews({ loggedInUser, setLoggedInUser }) {
   return (
@@ -23,7 +24,7 @@ export default function ApplicationViews({ loggedInUser, setLoggedInUser }) {
             path=":id"
             element={
               <AuthorizedRoute loggedInUser={loggedInUser}>
-                Post Details
+                <PostDetails loggedInUser={loggedInUser} />
               </AuthorizedRoute>
             }
           />
