@@ -26,7 +26,7 @@ public class PostController : ControllerBase
         {
         IQueryable<Post> query = _dbContext
         .Posts
-        .Include(p => p.User)
+        .Include(p => p.UserProfile)
             .ThenInclude(u => u.IdentityUser)
         .Include(p => p.Category)
         .Include(p => p.PostTags)
@@ -50,7 +50,7 @@ public class PostController : ControllerBase
             {
                 return NotFound("User does not exist.");
             }
-            query = query.Where(p => p.UserId == userId);
+            query = query.Where(p => p.UserProfileId == userId);
         }
 
         if (tagId.HasValue)
@@ -71,14 +71,14 @@ public class PostController : ControllerBase
         .Select(p => new PostDTO
         {
             Id = p.Id,
-            UserId = p.UserId,
+            UserId = p.UserProfileId,
             User = new UserProfileDTO
             {
-                Id = p.UserId,
-                FirstName = p.User.FirstName,
-                LastName = p.User.LastName,
-                UserName = p.User.IdentityUser.UserName,
-                Email = p.User.IdentityUser.Email,
+                Id = p.UserProfileId,
+                FirstName = p.UserProfile.FirstName,
+                LastName = p.UserProfile.LastName,
+                UserName = p.UserProfile.IdentityUser.UserName,
+                Email = p.UserProfile.IdentityUser.Email,
             },
             Title = p.Title,
             SubTitle = p.SubTitle,

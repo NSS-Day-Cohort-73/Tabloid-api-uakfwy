@@ -268,7 +268,7 @@ public class TabloidDbContext : IdentityDbContext<IdentityUser>
                     new Post
                     {
                         Id = 1,
-                        UserId = 1,
+                        UserProfileId = 1,
                         Title = "I Want To Be",
                         SubTitle = "The Very Best",
                         Body =
@@ -293,38 +293,6 @@ public class TabloidDbContext : IdentityDbContext<IdentityUser>
                         Yeah",
                         CategoryId = 5,
                         PublishDate = new DateTime(2025, 2, 8),
-<<<<<<< HEAD:Tabloid/TabloidDbContext.cs
-                        ImageUrl = "https://occ-0-8407-114.1.nflxso.net/dnm/api/v6/E8vDc_W8CLv7-yMQu8KMEC7Rrr8/AAAABf_vkYSzY2EsbRFAOJOS3_ZdreU4YoqzdzVZf-f1CEP9ndmI3705aHteXy3ZD7tLH4YbavoJT3lPK9luZDLgQxhQOBw1tLuBzxFG.jpg?r=b99",
-                        Approved = true
-            }
-        });
-        modelBuilder.Entity<PostReaction>().HasData(new PostReaction[]
-        {
-            new PostReaction { Id = 1, UserProfileId = 2, PostId = 1, ReactionId = 4 },
-            new PostReaction { Id = 2, UserProfileId = 3, PostId = 1, ReactionId = 3} 
-        });
-        modelBuilder.Entity<PostTag>().HasData(new PostTag[]
-        {
-            new PostTag { Id = 1, PostId = 1, TagId = 6 },
-            new PostTag { Id = 2, PostId = 1, TagId = 3 }
-        });
-        modelBuilder.Entity<Comment>().HasData(new Comment[]
-        {
-            new Comment
-            {
-                Id = 1,
-                PostId = 1,
-                UserProfileId = 2,
-                Body = "Digimon is better #Tai&Augumon",
-                DateSubmitted = new DateTime(2025, 2, 9)
-            }
-        });
-        modelBuilder.Entity<Subscription>().HasData(new Subscription[]
-        {
-            new Subscription { Id = 1, AuthorId = 1, SubscriberId = 2, BeginDate = new DateTime(2025, 2, 9) }
-        });
- 
-=======
                         ImageUrl =
                             "https://occ-0-8407-114.1.nflxso.net/dnm/api/v6/E8vDc_W8CLv7-yMQu8KMEC7Rrr8/AAAABf_vkYSzY2EsbRFAOJOS3_ZdreU4YoqzdzVZf-f1CEP9ndmI3705aHteXy3ZD7tLH4YbavoJT3lPK9luZDLgQxhQOBw1tLuBzxFG.jpg?r=b99",
                         Approved = true,
@@ -339,14 +307,14 @@ public class TabloidDbContext : IdentityDbContext<IdentityUser>
                     new PostReaction
                     {
                         Id = 1,
-                        UserId = 2,
+                        UserProfileId = 2,
                         PostId = 1,
                         ReactionId = 4,
                     },
                     new PostReaction
                     {
                         Id = 2,
-                        UserId = 3,
+                        UserProfileId = 3,
                         PostId = 1,
                         ReactionId = 3,
                     },
@@ -380,7 +348,7 @@ public class TabloidDbContext : IdentityDbContext<IdentityUser>
                     {
                         Id = 1,
                         PostId = 1,
-                        UserId = 2,
+                        UserProfileId = 2,
                         Body = "Digimon is better #Tai&Augumon",
                         DateSubmitted = new DateTime(2025, 2, 9),
                     },
@@ -401,7 +369,6 @@ public class TabloidDbContext : IdentityDbContext<IdentityUser>
                 }
             );
 
->>>>>>> develop:TabloidDbContext.cs
         //Configure the one-to-many relationship between Tags and PostTags (Cascade Delete)
         modelBuilder
             .Entity<PostTag>()
