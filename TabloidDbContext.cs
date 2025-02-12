@@ -268,7 +268,7 @@ public class TabloidDbContext : IdentityDbContext<IdentityUser>
                     new Post
                     {
                         Id = 1,
-                        UserId = 1,
+                        UserProfileId = 1,
                         Title = "I Want To Be",
                         SubTitle = "The Very Best",
                         Body =
@@ -307,14 +307,14 @@ public class TabloidDbContext : IdentityDbContext<IdentityUser>
                     new PostReaction
                     {
                         Id = 1,
-                        UserId = 2,
+                        UserProfileId = 2,
                         PostId = 1,
                         ReactionId = 4,
                     },
                     new PostReaction
                     {
                         Id = 2,
-                        UserId = 3,
+                        UserProfileId = 3,
                         PostId = 1,
                         ReactionId = 3,
                     },
@@ -348,7 +348,7 @@ public class TabloidDbContext : IdentityDbContext<IdentityUser>
                     {
                         Id = 1,
                         PostId = 1,
-                        UserId = 2,
+                        UserProfileId = 2,
                         Body = "Digimon is better #Tai&Augumon",
                         DateSubmitted = new DateTime(2025, 2, 9),
                     },
