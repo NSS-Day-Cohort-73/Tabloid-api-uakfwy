@@ -5,17 +5,36 @@ import { getAllCategories } from "../../managers/categoryManager";
 
 export const NewPost = ({ loggedInUser }) => {
   const [categories, setCategories] = useState([]);
+  const [newPost, setNewPost] = useState({});
 
   useEffect(() => {
     getAllCategories().then(setCategories);
   }, [categories.length]);
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setNewPost((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
+
+  const handleCreatePost = (e) => {
+    e.preventDefault();
+    setNewPost((prev) => ({
+      ...prev,
+      categoryId: parseInt(newPost.categoryId),
+      imageUrl: null,
+    }));
+  };
+
   return (
     <div className="container">
       <Form className="new-post-container mt-5">
         <h2 className="text-center mb-5">Create A Post</h2>
         <FormGroup>
           <Row>
-            <Col md={2} className="d-flex justify-content-center">
+            <Col md={2} className="mb-3">
               <Label for="new-post-title">Title</Label>
             </Col>
             <Col md={10}>
@@ -26,13 +45,14 @@ export const NewPost = ({ loggedInUser }) => {
                 name="title"
                 required
                 placeholder="Enter title"
+                onChange={(e) => handleInputChange(e)}
               />
             </Col>
           </Row>
         </FormGroup>
         <FormGroup>
           <Row>
-            <Col md={2}>
+            <Col md={2} className="mb-3">
               <Label for="new-post-subTitle">Sub-Title</Label>
             </Col>
             <Col md={10}>
@@ -40,15 +60,16 @@ export const NewPost = ({ loggedInUser }) => {
                 id="new-post-subTitle"
                 className="post-input"
                 type="text"
-                name="sub-title"
+                name="subTitle"
                 placeholder="Enter sub-title"
+                onChange={(e) => handleInputChange(e)}
               />
             </Col>
           </Row>
         </FormGroup>
         <FormGroup>
           <Row>
-            <Col md={2}>
+            <Col md={2} className="mb-3">
               <Label for="new-post-category">Category</Label>
             </Col>
             <Col md={10}>
@@ -56,8 +77,9 @@ export const NewPost = ({ loggedInUser }) => {
                 id="new-post-category"
                 className="post-input"
                 type="select"
-                name="category"
+                name="categoryId"
                 required
+                onChange={(e) => handleInputChange(e)}
               >
                 <option value="">Select a category...</option>
                 {categories.map((category) => (
@@ -81,12 +103,19 @@ export const NewPost = ({ loggedInUser }) => {
                 type="textarea"
                 name="body"
                 placeholder="What do you want to say?"
+                onChange={(e) => handleInputChange(e)}
               />
             </Col>
           </Row>
         </FormGroup>
         <FormGroup>
-          <Button className="mt-5">Submit</Button>
+          <Button
+            className="mt-5"
+            color="dark"
+            onClick={(e) => handleCreatePost(e)}
+          >
+            Submit
+          </Button>
         </FormGroup>
       </Form>
     </div>
