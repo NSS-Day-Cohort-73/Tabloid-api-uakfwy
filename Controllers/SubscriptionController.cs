@@ -18,21 +18,20 @@ public class SubscriptionController : ControllerBase
         _dbContext = context;
     }
 
-    [HttpGet("userId")]
+    [HttpGet("{userId}/{authorId}")]
     [Authorize]
-    public IActionResult GetSubscriptionsForCurrentUser(int userId)
+    public IActionResult GetSubscriptionStatus(int userId, int authorId)
     {
-        return Ok(
-            _dbContext
-                .Subscriptions.Where(s => s.SubscriberId == userId)
-                .Select(s => new SubscriptionDTO
-                {
-                    Id = s.Id,
-                    AuthorId = s.AuthorId,
-                    SubscriberId = s.SubscriberId,
-                    BeginDate = s.BeginDate,
-                })
+        var subscription = _dbContext.Subscriptions.FirstOrDefault(s =>
+            s.SubscriberId == userId && s.AuthorId == authorId
         );
+
+        if (subscription == null)
+        {
+            return Ok(false);
+        }
+
+        return Ok(true);
     }
 
     [HttpPost]
@@ -55,7 +54,7 @@ public class SubscriptionController : ControllerBase
     [Authorize]
     public IActionResult DeleteSubscription(int id)
     {
-        var subscription = _dbContext.Subscriptions.FirstOrDefault(s => s.Id == id);
+        var subscription = _dbContext.Subscriptions.SingleOrDefault(s => s.SubscriberId == id);
 
         if (subscription == null)
         {

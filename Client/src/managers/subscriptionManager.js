@@ -1,7 +1,10 @@
 const _apiUrl = "/api/subscription";
 
-export const getSubscriptionsByUserId = (userId) => {
-  return fetch(`${_apiUrl}/${userId}`).then((res) => res.json());
+export const getSubscriptionStatus = (userId, authorId) => {
+  return fetch(`/api/subscription/${userId}/${authorId}`).then((res) => {
+    if (!res.ok) return false;
+    return res.json();
+  });
 };
 
 export const createSubscription = (subscription) => {
