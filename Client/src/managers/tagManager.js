@@ -19,3 +19,28 @@ export const getTags = async (postId = null) => {
 
   return response.json();
 };
+
+export const getTagById = (id) => {
+  return fetch(`${apiUrl}/${id}`)
+      .then((res) => {
+          if (!res.ok) {
+              throw new Error(`HTTP error! Status: ${res.status}`);
+          }
+          return res.json();
+      });
+};
+
+export const updateTag = (tag) => {
+  return fetch(`${apiUrl}/${tag.id}`, {
+      method: "PUT",
+      headers: {
+          "Content-Type": "application/json",
+      },
+      body: JSON.stringify(tag),
+  })
+  .then((res) => {
+      if (!res.ok) {
+          throw new Error(`HTTP error! Status: ${res.status}`);
+      }
+  });
+};
