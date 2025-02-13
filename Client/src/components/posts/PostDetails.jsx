@@ -170,13 +170,28 @@ export const PostDetails = ({ loggedInUser }) => {
             </Badge>
           ))}
         </div>
-        <button
-          onClick={handleSubscribeBtn}
-          className="border rounded shadow-sm btn"
-          style={{ backgroundColor: "#db534b", color: "white" }}
-        >
-          {subscriptionStatus === false ? "Subscribe" : "Unsubscribe"}
-        </button>
+        {loggedInUser.id === post.userProfileId ? (
+          ""
+        ) : (
+          <button
+            onClick={handleSubscribeBtn}
+            className="border rounded shadow-sm btn"
+            style={
+              subscriptionStatus === true
+                ? {
+                    backgroundColor: "white",
+                    color: "#db534b",
+                    borderColor: "#ffa500",
+                  }
+                : {
+                    backgroundColor: "#db534b",
+                    color: "white",
+                  }
+            }
+          >
+            {subscriptionStatus === false ? "Subscribe" : "Unsubscribe"}
+          </button>
+        )}
       </div>
       <CommentList loggedInUser={loggedInUser} postId={id} />
     </div>
