@@ -39,6 +39,11 @@ export default function NavBar({ loggedInUser, setLoggedInUser }) {
                   </NavLink>
                 </NavItem>
                 <NavItem>
+                  <NavLink tag={RRNavLink} to="/posts/new">
+                    New Post
+                  </NavLink>
+                </NavItem>
+                <NavItem>
                   <NavLink tag={RRNavLink} to="/subscribed">
                     Subscribed Posts
                   </NavLink>
@@ -71,7 +76,10 @@ export default function NavBar({ loggedInUser, setLoggedInUser }) {
             </Collapse>
             <Nav className="ms-auto d-flex flex-row align-items-center gap-3">
               <NavItem>
-                <span className="text-light">Welcome, {loggedInUser.name || loggedInUser.userName || 'User'}</span>
+                <span className="text-light">
+                  Welcome,{" "}
+                  {loggedInUser.name || loggedInUser.userName || "User"}
+                </span>
               </NavItem>
               <NavItem>
                 <Button
