@@ -2,10 +2,14 @@ import { Button, Col, Form, FormGroup, Input, Label, Row } from "reactstrap";
 import "../../styles/posts.css";
 import { useEffect, useState } from "react";
 import { getAllCategories } from "../../managers/categoryManager";
+import { useNavigate } from "react-router-dom";
+import { addNewPost } from "../../managers/postManager";
 
 export const NewPost = ({ loggedInUser }) => {
   const [categories, setCategories] = useState([]);
   const [newPost, setNewPost] = useState({});
+
+  const navigate = useNavigate();
 
   useEffect(() => {
     getAllCategories().then(setCategories);
@@ -21,11 +25,14 @@ export const NewPost = ({ loggedInUser }) => {
 
   const handleCreatePost = (e) => {
     e.preventDefault();
-    setNewPost((prev) => ({
-      ...prev,
+    const newPostDetails = {
+      ...newPost,
       categoryId: parseInt(newPost.categoryId),
       imageUrl: null,
-    }));
+    };
+    addNewPost(loggedInUser.id, newPostDetails).then((response) =>
+      navigate(`/posts/${response.id}`)
+    );
   };
 
   return (

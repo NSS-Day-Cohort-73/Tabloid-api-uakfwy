@@ -3,6 +3,9 @@
   height: 20%;
   box-shadow: 0 0 0.1rem gray;
 }
+.postCard-small-image {
+  height: 20%;
+}
 
 .postCard:hover {
   cursor: pointer;
