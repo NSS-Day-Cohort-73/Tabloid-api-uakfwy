@@ -17,3 +17,11 @@ export const deleteCommentById = (id) => {
     method: "DELETE",
   });
 };
+
+export const updateComment = (commentId, commentBody) => {
+  return fetch(`${_apiUrl}/${commentId}`, {
+    method: "PUT",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(commentBody),
+  });
+};

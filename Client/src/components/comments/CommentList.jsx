@@ -3,6 +3,7 @@ import {
   deleteCommentById,
   getAllComments,
   postNewComment,
+  updateComment,
 } from "../../managers/commentManager";
 import { useParams } from "react-router-dom";
 
@@ -72,6 +73,37 @@ export default function CommentList({ loggedInUser }) {
     setCurrentEditCommentId(commentId);
   };
 
+  const cancelEditComment = () => {
+    setCurrentEditComment("");
+    setCurrentEditCommentId(null);
+  };
+
+  const postEditComment = (commentId) => {
+    const trimmedComment = currentEditComment.trim();
+
+    if (!trimmedComment) {
+      window.alert("Please enter a comment before submitting");
+      return;
+    }
+
+    if (trimmedComment.length > 250) {
+      window.alert("Please limit your comment to less than 250 characters");
+      return;
+    }
+
+    const commentToSend = {
+      body: trimmedComment,
+    };
+
+    updateComment(commentId, commentToSend)
+      .then(() => {
+        setCurrentEditComment("");
+        setCurrentEditCommentId(null);
+        return getAllComments(postId);
+      })
+      .then((c) => setComments(c));
+  };
+
   return (
     <div className="text-center container mt-4">
       <h2>Comments</h2>
@@ -92,43 +124,77 @@ export default function CommentList({ loggedInUser }) {
         {comments.map((c) => (
           <div
             key={c.id}
-            className="border rounded p-3 shadow-sm d-flex align-items-center mb-3"
-            style={{ height: "80px" }}
+            className="border rounded p-3 shadow-sm d-flex mb-3"
+            style={{ minHeight: "80px" }}
           >
             <div
-              className="d-flex justify-content-center align-items-center"
-              style={{ width: "80px" }}
+              className="d-flex flex-column align-items-center"
+              style={{ width: "200px" }}
             >
               <img
                 src={c.userProfile.imageLocation}
-                className="img-fluid rounded-circle"
+                className="img-fluid rounded-circle mb-2"
                 style={{ height: "80px", width: "80px", objectFit: "cover" }}
                 alt="profile picture"
               />
-            </div>
-            <div className="p-2 mt-1">
-              <h6 className="mt-2">
+              <h5 className="mb-1">{c.userProfile.fullName}</h5>
+              <small className="text-muted">
                 {new Date(c.dateSubmitted).toLocaleDateString()}
-              </h6>
-              <h5>{c.userProfile.fullName}</h5>
+              </small>
             </div>
-            <p className="p-3 mt-3 ms-auto">{c.body}</p>
-            {c.userProfileId === loggedInUser.id && (
-              <div className="d-flex gap-2">
-                <button
-                  className="border rounded"
-                  onClick={() => editComment(c.id, c.body)}
-                >
-                  ✍️
-                </button>
-                <button
-                  className="border rounded"
-                  onClick={() => deleteComment(c.id)}
-                >
-                  🗑️
-                </button>
-              </div>
-            )}
+            <div className="flex-grow-1 ms-3">
+              {currentEditCommentId === c.id ? (
+                <div className="d-flex gap-2">
+                  <textarea
+                    className="form-control me-2"
+                    value={currentEditComment}
+                    onChange={(e) => setCurrentEditComment(e.target.value)}
+                    rows="3"
+                    maxLength="250"
+                    style={{ resize: "none" }}
+                  />
+                  <div className="d-flex gap-2">
+                    <button
+                      className="border rounded"
+                      onClick={cancelEditComment}
+                    >
+                      ❌
+                    </button>
+                    <button
+                      className="border rounded"
+                      onClick={() => postEditComment(c.id)}
+                    >
+                      ✅
+                    </button>
+                  </div>
+                </div>
+              ) : (
+                <div className="d-flex justify-content-between align-items-start">
+                  <p
+                    className="text-start mb-0"
+                    style={{ whiteSpace: "pre-wrap" }}
+                  >
+                    {c.body}
+                  </p>
+                  {c.userProfileId === loggedInUser.id && (
+                    <div className="d-flex gap-2 ms-3">
+                      <button
+                        className="border rounded"
+                        onClick={() => editComment(c.id, c.body)}
+                      >
+                        ✍️
+                      </button>
+                      <button
+                        className="border rounded"
+                        onClick={() => deleteComment(c.id)}
+                      >
+                        🗑️
+                      </button>
+                    </div>
+                  )}
+                </div>
+              )}
+            </div>
           </div>
         ))}
       </div>

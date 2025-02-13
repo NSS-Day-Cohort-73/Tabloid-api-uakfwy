@@ -83,4 +83,22 @@ public class CommentController : ControllerBase
         _dbContext.SaveChanges();
         return NoContent();
     }
+
+    [HttpPut("{id}")]
+    [Authorize]
+    public IActionResult UpdateComment(CreateCommentDTO commentDTO, int id)
+    {
+        Comment commentToUpdate = _dbContext.Comments.SingleOrDefault(c => c.Id == id);
+
+        if (commentToUpdate == null)
+        {
+            return NotFound();
+        }
+
+        commentToUpdate.Body = commentDTO.Body;
+
+        _dbContext.SaveChanges();
+
+        return NoContent();
+    }
 }
