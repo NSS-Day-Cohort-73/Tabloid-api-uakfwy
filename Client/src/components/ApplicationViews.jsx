@@ -8,6 +8,7 @@ import TagList from "./tags/TagList";
 import CategoryList from "./category/CategoryList";
 import { AllPosts } from "./posts/AllPosts";
 import { PostDetails } from "./posts/PostDetails";
+import CommentList from "./comments/CommentList";
 
 export default function ApplicationViews({ loggedInUser, setLoggedInUser }) {
   return (
@@ -68,6 +69,10 @@ export default function ApplicationViews({ loggedInUser, setLoggedInUser }) {
           element={<Register setLoggedInUser={setLoggedInUser} />}
         />
         <Route path="categories" element={<CategoryList />} />
+        <Route
+          path="comments"
+          element={<CommentList loggedInUser={loggedInUser} />}
+        />
       </Route>
       <Route path="*" element={<p>Whoops, nothing here...</p>} />
     </Routes>
