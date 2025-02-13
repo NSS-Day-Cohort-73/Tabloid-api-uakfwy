@@ -75,11 +75,15 @@ export const PostDetails = ({ loggedInUser }) => {
   return (
     <div className="container">
       <div className="post-details-header">
-        <img
-          alt={`Image for the post named ${post.title}`}
-          src={post.imageUrl}
-          className="post-header-image mb-2"
-        />
+        {post.imageUrl !== null ? (
+          <img
+            alt={`Image for the post named ${post.title}`}
+            src={post.imageUrl}
+            className="post-header-image mb-2"
+          />
+        ) : (
+          ""
+        )}
       </div>
       <div className="post-details-card-header">
         <h4 className="post-details-title">{post.title}</h4>
