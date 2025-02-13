@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Tabloid.Data;
+using Tabloid.Models;
 using Tabloid.Models.DTOs;
 
 namespace Tabloid.Controllers;
@@ -18,11 +19,25 @@ public class TagController : ControllerBase
     }
 
     [HttpGet]
-    public IActionResult Get()
+    public IActionResult Get([FromQuery] int? postId)
     {
-        return Ok(_dbContext.Tags
+        try 
+        {
+        IQueryable<Tag> query = _dbContext.Tags
             .Include(t => t.PostTags)
-            .OrderBy(t => t.TagName)
+            .OrderBy(t => t.TagName);
+
+            if (postId.HasValue)
+            {
+                query = query.Where(t => t.PostTags.Any(pt => pt.PostId == postId.Value));
+            }
+
+            if (postId <= 0)
+            {
+                return BadRequest("postId must be a positive integer");
+            }
+
+            return Ok(query
             .Select(t => new TagDTO
             {
                 Id = t.Id,
@@ -34,5 +49,10 @@ public class TagController : ControllerBase
                     TagId = pt.TagId
                 }).ToList()
             }));
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, $"An error occurred processing your request {ex.Message}");
+        }
     }
 }

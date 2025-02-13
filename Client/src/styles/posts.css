@@ -59,3 +59,30 @@
   width: 70%;
   margin: 0 auto;
 }
+
+.post-reactions {
+  width: 70%;
+  margin: 0 auto;
+}
+
+.reaction-pill {
+  border: 1px solid #343a40;
+  margin-right: 0.5rem;
+}
+
+.reaction-pill:hover {
+  cursor: pointer;
+  box-shadow: 0 0 0.1rem gray;
+}
+.custom-badge-info {
+  background-color: #9ed0e7 !important;
+}
+
+.post-details-tags-container {
+  width: 40%;
+  margin: 0 auto;
+}
+
+.post-details-tags-container h6 {
+  color: #343a40;
+}

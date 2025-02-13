@@ -3,8 +3,10 @@ using Microsoft.AspNetCore.Mvc;
 using Tabloid.Data;
 using Tabloid.Models.DTOs;
 
+namespace Tabloid.Controllers;
+
 [ApiController]
-[Route("/api/[controller]")]
+[Route("api/[controller]")]
 public class ReactionController : ControllerBase
 {
     private TabloidDbContext _dbContext;
@@ -15,8 +17,10 @@ public class ReactionController : ControllerBase
 
     [HttpGet]
     [Authorize]
-    IActionResult GetReactions()
+    public IActionResult GetReactions()
     {
+        try
+        {
         return Ok(_dbContext
         .Reactions
         .Select(r => new ReactionDTO
@@ -25,5 +29,10 @@ public class ReactionController : ControllerBase
             Name = r.Name,
             Icon = r.Icon
         }));
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, $"An error occurred while processing your request {ex.Message}");
+        }
     }
 }

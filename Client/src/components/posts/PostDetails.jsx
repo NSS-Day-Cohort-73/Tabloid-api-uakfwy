@@ -2,16 +2,74 @@ import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { getPostById } from "../../managers/postManager";
 import "../../styles/posts.css";
-import { Col, Row } from "reactstrap";
+import { Badge, Col, Row } from "reactstrap";
+import {
+  getAllReactions,
+  newReaction,
+  removeReaction,
+} from "../../managers/reactionManager";
+import { getTags } from "../../managers/tagManager";
 
-export const PostDetails = () => {
+export const PostDetails = ({ loggedInUser }) => {
   const [post, setPost] = useState({});
+  const [reactions, setReactions] = useState([]);
+  const [loggedInUserReactions, setLoggedInUserReactions] = useState([]);
+  const [postTags, setPostTags] = useState([]);
 
   const { id } = useParams();
 
   useEffect(() => {
     getPostById(id).then(setPost);
-  }, []);
+    getAllReactions().then(setReactions);
+    getTags(id).then(setPostTags);
+  }, [id]);
+
+  useEffect(() => {
+    const reactions = post?.postReactions || [];
+    const userReactions = reactions
+      .filter((reaction) => reaction.userProfileId === loggedInUser.id)
+      .map((reaction) => reaction.reactionId);
+
+    setLoggedInUserReactions(userReactions);
+  }, [post, loggedInUser, id]);
+
+  const reactionCount = (reactionId) => {
+    const reactions = post?.postReactions || [];
+    let count = 0;
+    for (let reaction of reactions) {
+      if (reaction.reactionId === reactionId) {
+        count++;
+      }
+    }
+    return count;
+  };
+
+  const handleNewReaction = (clickedReactionId) => {
+    const reaction = {
+      userProfileId: loggedInUser.id,
+      postId: id,
+      reactionId: clickedReactionId,
+    };
+    newReaction(reaction).then(() => {
+      getPostById(id).then(setPost);
+    });
+  };
+
+  const handleUnReact = (reactionId) => {
+    const reactions = post?.postReactions || [];
+    const reactionToRemove = reactions.find(
+      (reaction) =>
+        reaction.reactionId === reactionId &&
+        reaction.userProfileId === loggedInUser.id
+    );
+    if (reactionToRemove) {
+      removeReaction(reactionToRemove.id).then(() => {
+        getPostById(id).then(setPost);
+      });
+    } else {
+      console.error("No matching reaction found to remove");
+    }
+  };
 
   return (
     <div className="container">
@@ -24,7 +82,15 @@ export const PostDetails = () => {
       </div>
       <div className="post-details-card-header">
         <h4 className="post-details-title">{post.title}</h4>
+
         <h6 className="post-details-category">{post.category?.categoryName}</h6>
+        <Row className="post-details-tags-container">
+          {postTags.map((tag) => (
+            <Col key={tag.id}>
+              <h6 className="post-details-tags">{tag.tagName}</h6>
+            </Col>
+          ))}
+        </Row>
       </div>
       <div className="post-details-info">
         <Row className="d-flex justify-content-start w-100">
@@ -42,7 +108,25 @@ export const PostDetails = () => {
         </Row>
       </div>
       <div className="post-details-body">{post.body}</div>
-      <div className="post-reactions">{}</div>
+      <div className="post-reactions">
+        {reactions.map((r) => (
+          <Badge
+            key={r.id}
+            className={`reaction-pill mt-2 text-dark ${
+              loggedInUserReactions.includes(r.id) && "custom-badge-info"
+            }`}
+            color={loggedInUserReactions.includes(r.id) ? "info" : "light"}
+            pill
+            onClick={() =>
+              loggedInUserReactions.includes(r.id)
+                ? handleUnReact(r.id)
+                : handleNewReaction(r.id)
+            }
+          >
+            {r.icon} {reactionCount(r.id)}
+          </Badge>
+        ))}
+      </div>
     </div>
   );
 };
