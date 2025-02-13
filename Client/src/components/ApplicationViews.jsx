@@ -69,10 +69,6 @@ export default function ApplicationViews({ loggedInUser, setLoggedInUser }) {
           element={<Register setLoggedInUser={setLoggedInUser} />}
         />
         <Route path="categories" element={<CategoryList />} />
-        <Route
-          path="comments"
-          element={<CommentList loggedInUser={loggedInUser} />}
-        />
       </Route>
       <Route path="*" element={<p>Whoops, nothing here...</p>} />
     </Routes>

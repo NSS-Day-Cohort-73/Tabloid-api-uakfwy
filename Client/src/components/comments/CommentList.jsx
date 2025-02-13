@@ -7,14 +7,16 @@ import {
 } from "../../managers/commentManager";
 import { useParams } from "react-router-dom";
 
-export default function CommentList({ loggedInUser }) {
+export default function CommentList({ loggedInUser, postId }) {
   const [comments, setComments] = useState([]);
   const [newComment, setNewComment] = useState("");
   const [currentEditComment, setCurrentEditComment] = useState("");
   const [currentEditCommentId, setCurrentEditCommentId] = useState(null);
 
-  //const { postId } = useParams();
-  const postId = 1;
+  //   const { postId } = useParams();
+
+  //hard coding postId for testing
+  //const postId = 1;
 
   useEffect(() => {
     getAllComments(postId)
@@ -36,8 +38,9 @@ export default function CommentList({ loggedInUser }) {
     }
 
     const commentToSend = {
-      //postId: postId,
-      postId: 1,
+      postId: postId,
+      //hard coding postId for testing
+      //postId: 1,
       userProfileId: loggedInUser.id,
       body: newComment,
     };

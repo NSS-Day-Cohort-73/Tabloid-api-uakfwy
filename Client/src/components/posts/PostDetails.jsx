@@ -9,6 +9,7 @@ import {
   removeReaction,
 } from "../../managers/reactionManager";
 import { getTags } from "../../managers/tagManager";
+import CommentList from "../comments/CommentList";
 
 export const PostDetails = ({ loggedInUser }) => {
   const [post, setPost] = useState({});
@@ -127,6 +128,7 @@ export const PostDetails = ({ loggedInUser }) => {
           </Badge>
         ))}
       </div>
+      <CommentList loggedInUser={loggedInUser} postId={id} />
     </div>
   );
 };
