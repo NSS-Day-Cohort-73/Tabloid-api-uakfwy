@@ -63,7 +63,7 @@ export const AllPosts = () => {
                           <CardSubtitle
                             tag="h6"
                             className="text-muted mb-4"
-                          >{`Author: ${posts[0]?.user?.firstName} ${posts[0]?.user?.lastName}`}</CardSubtitle>
+                          >{`Author: ${posts[0]?.userProfile?.userName}`}</CardSubtitle>
                           <CardSubtitle tag="h6" className="text-muted mb-4">
                             {`Published: ${
                               posts[0]?.publishDate?.split("T")[0]
