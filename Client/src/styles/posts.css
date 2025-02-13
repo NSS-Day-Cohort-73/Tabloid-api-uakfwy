@@ -3,6 +3,9 @@
   height: 20%;
   box-shadow: 0 0 0.1rem gray;
 }
+.postCard-small-image {
+  height: 20%;
+}
 
 .postCard:hover {
   cursor: pointer;
@@ -54,7 +57,6 @@
   margin-left: auto;
   margin-right: auto;
 }
-
 .post-details-body {
   width: 70%;
   margin: 0 auto;
@@ -63,6 +65,14 @@
 .post-reactions {
   width: 70%;
   margin: 0 auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.reactions-group {
+  display: flex;
+  gap: 8px;
 }
 
 .reaction-pill {
@@ -85,4 +95,15 @@
 
 .post-details-tags-container h6 {
   color: #343a40;
+}
+
+.new-post-container {
+  width: 60%;
+  margin: 0 auto;
+  border: 1px solid #343a40;
+  padding: 4rem 8rem;
+}
+
+.post-input {
+  width: 85%;
 }

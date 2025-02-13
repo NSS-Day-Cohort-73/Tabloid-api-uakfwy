@@ -35,11 +35,15 @@ export const AllPosts = () => {
                     className="postCard"
                     onClick={() => navigate(`/posts/${posts[0].id}`)}
                   >
-                    <img
-                      alt={`Image for ${posts[0]?.title}`}
-                      src={posts[0]?.imageUrl}
-                      className="mb-2"
-                    />
+                    {posts[0]?.imageUrl !== null ? (
+                      <img
+                        alt={`Image for ${posts[0]?.title}`}
+                        src={posts[0]?.imageUrl}
+                        className="mb-2"
+                      />
+                    ) : (
+                      ""
+                    )}
                     <CardBody>
                       <Row>
                         <Col>
@@ -53,11 +57,6 @@ export const AllPosts = () => {
                           ) : (
                             ""
                           )}
-                          <CardText>
-                            {posts[0]?.body?.length > 100
-                              ? `${posts[0]?.body?.slice(0, 200)}...`
-                              : posts[0]?.body}
-                          </CardText>
                         </Col>
                         <Col>
                           <CardSubtitle
@@ -75,6 +74,11 @@ export const AllPosts = () => {
                           >{`Read Time: `}</CardSubtitle>
                         </Col>
                       </Row>
+                      <CardText>
+                        {posts[0]?.body?.length > 100
+                          ? `${posts[0]?.body?.slice(0, 200)}...`
+                          : posts[0]?.body}
+                      </CardText>
                     </CardBody>
                   </Card>
                 </div>
@@ -84,11 +88,11 @@ export const AllPosts = () => {
                   {posts.slice(1).map((p) => (
                     <Card
                       key={p.id}
-                      className="postCard"
+                      className="postCard-small"
                       onClick={() => navigate(`/posts/${p.id}`)}
                     >
                       <Row>
-                        <Col md={8}>
+                        <Col>
                           <CardBody>
                             <CardTitle tag="h5">{p.title}</CardTitle>
                             <Row>
@@ -108,7 +112,7 @@ export const AllPosts = () => {
                                 <CardSubtitle
                                   tag="h6"
                                   className="mb-2 text-muted"
-                                >{`Author: ${p.user?.firstName} ${p.user?.lastName}`}</CardSubtitle>
+                                >{`Author: ${p.userProfile?.userName}`}</CardSubtitle>
                               </Col>
                             </Row>
                             <CardText className="mb-3">{`${p.body.slice(
@@ -120,13 +124,15 @@ export const AllPosts = () => {
                                 <CardSubtitle
                                   tag="h6"
                                   className="text-muted"
-                                >{`Published: ${p.publishDate}`}</CardSubtitle>
+                                >{`Published: ${
+                                  p.publishDate.split("T")[0]
+                                }`}</CardSubtitle>
                               </Col>
                               <Col>{`Read Time: `}</Col>
                             </Row>
                           </CardBody>
                         </Col>
-                        <Col md={4}>
+                        <Col>
                           <img
                             alt={`Image for the post ${p.title}`}
                             src={p.imageUrl}

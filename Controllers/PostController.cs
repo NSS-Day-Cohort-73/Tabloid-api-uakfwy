@@ -1,3 +1,4 @@
+using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -212,5 +213,47 @@ public class PostController : ControllerBase
            return StatusCode(500, $"An error occurred while processing your request {ex.Message}"); 
         }
 
+    }
+
+    [HttpPost]
+    [Authorize]
+    public IActionResult NewPost([FromBody] Post post, [FromQuery, Required] int userId)
+    {
+        try
+        {
+        UserProfile postUser = _dbContext
+        .UserProfiles
+        .Include(up => up.IdentityUser)
+        .SingleOrDefault(up => up.Id == userId);
+
+        if (userId <= 0)
+        {
+            return BadRequest("userId must be a positive integer");
+        }
+
+        if (postUser == null)
+        {
+            return NotFound("User not found");
+        }
+
+        var usersRoles = _dbContext
+        .UserRoles
+        .Where(ur => ur.UserId == postUser.IdentityUserId)
+        .Select(ur => _dbContext.Roles
+        .SingleOrDefault(r => r.Id == ur.RoleId).Name);
+
+         post.Approved = usersRoles.Contains("Admin") ? true : false;
+        
+       post.UserProfileId = userId;
+
+       _dbContext.Posts.Add(post);
+       _dbContext.SaveChanges();
+
+       return Created($"/api/post/{post.Id}", post);
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, $"An error occurred while processing your request {ex.Message}");
+        }
     }
 }
