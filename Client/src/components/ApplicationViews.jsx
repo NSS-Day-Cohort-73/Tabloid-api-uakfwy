@@ -8,6 +8,7 @@ import TagList from "./tags/TagList";
 import CategoryList from "./category/CategoryList";
 import { AllPosts } from "./posts/AllPosts";
 import { PostDetails } from "./posts/PostDetails";
+import CommentList from "./comments/CommentList";
 
 export default function ApplicationViews({ loggedInUser, setLoggedInUser }) {
   return (
