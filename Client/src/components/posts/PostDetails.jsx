@@ -10,12 +10,20 @@ import {
 } from "../../managers/reactionManager";
 import { getTags } from "../../managers/tagManager";
 import CommentList from "../comments/CommentList";
+import {
+  createSubscription,
+  deleteSubscription,
+  getSubscriptionStatus,
+} from "../../managers/subscriptionManager";
+import style from "../../../node_modules/dom-helpers/esm/css";
 
 export const PostDetails = ({ loggedInUser }) => {
   const [post, setPost] = useState({});
   const [reactions, setReactions] = useState([]);
   const [loggedInUserReactions, setLoggedInUserReactions] = useState([]);
   const [postTags, setPostTags] = useState([]);
+
+  const [subscriptionStatus, setSubscriptionStatus] = useState(false);
 
   const { id } = useParams();
 
@@ -24,6 +32,14 @@ export const PostDetails = ({ loggedInUser }) => {
     getAllReactions().then(setReactions);
     getTags(id).then(setPostTags);
   }, [id]);
+
+  useEffect(() => {
+    if (post?.userProfile?.id) {
+      getSubscriptionStatus(loggedInUser.id, post.userProfileId).then(
+        (response) => setSubscriptionStatus(!!response)
+      );
+    }
+  }, [post]);
 
   useEffect(() => {
     const reactions = post?.postReactions || [];
@@ -72,6 +88,27 @@ export const PostDetails = ({ loggedInUser }) => {
     }
   };
 
+  const handleSubscribeBtn = () => {
+    if (subscriptionStatus === false) {
+      const subscriptionObj = {
+        authorId: post.userProfileId,
+        subscriberId: loggedInUser.id,
+      };
+
+      createSubscription(subscriptionObj).then(() => {
+        getSubscriptionStatus(loggedInUser.id, post.userProfileId).then(
+          (response) => setSubscriptionStatus(!!response)
+        );
+      });
+    } else {
+      deleteSubscription(post.userProfileId).then(() => {
+        getSubscriptionStatus(loggedInUser.id, post.userProfileId).then(
+          (response) => setSubscriptionStatus(!!response)
+        );
+      });
+    }
+  };
+
   return (
     <div className="container">
       <div className="post-details-header">
@@ -114,23 +151,47 @@ export const PostDetails = ({ loggedInUser }) => {
       </div>
       <div className="post-details-body">{post.body}</div>
       <div className="post-reactions">
-        {reactions.map((r) => (
-          <Badge
-            key={r.id}
-            className={`reaction-pill mt-2 text-dark ${
-              loggedInUserReactions.includes(r.id) && "custom-badge-info"
-            }`}
-            color={loggedInUserReactions.includes(r.id) ? "info" : "light"}
-            pill
-            onClick={() =>
-              loggedInUserReactions.includes(r.id)
-                ? handleUnReact(r.id)
-                : handleNewReaction(r.id)
+        <div className="reactions-group">
+          {reactions.map((r) => (
+            <Badge
+              key={r.id}
+              className={`reaction-pill mt-2 text-dark ${
+                loggedInUserReactions.includes(r.id) && "custom-badge-info"
+              }`}
+              color={loggedInUserReactions.includes(r.id) ? "info" : "light"}
+              pill
+              onClick={() =>
+                loggedInUserReactions.includes(r.id)
+                  ? handleUnReact(r.id)
+                  : handleNewReaction(r.id)
+              }
+            >
+              {r.icon} {reactionCount(r.id)}
+            </Badge>
+          ))}
+        </div>
+        {loggedInUser.id === post.userProfileId ? (
+          ""
+        ) : (
+          <button
+            onClick={handleSubscribeBtn}
+            className="border rounded shadow-sm btn"
+            style={
+              subscriptionStatus === true
+                ? {
+                    backgroundColor: "white",
+                    color: "#db534b",
+                    borderColor: "#ffa500",
+                  }
+                : {
+                    backgroundColor: "#db534b",
+                    color: "white",
+                  }
             }
           >
-            {r.icon} {reactionCount(r.id)}
-          </Badge>
-        ))}
+            {subscriptionStatus === false ? "Subscribe" : "Unsubscribe"}
+          </button>
+        )}
       </div>
       <CommentList loggedInUser={loggedInUser} postId={id} />
     </div>

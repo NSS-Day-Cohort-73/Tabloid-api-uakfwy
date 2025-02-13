@@ -9,6 +9,7 @@ namespace Tabloid.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
+[Authorize]
 public class TagController : ControllerBase
 {
     private TabloidDbContext _dbContext;
@@ -54,5 +55,43 @@ public class TagController : ControllerBase
         {
             return StatusCode(500, $"An error occurred processing your request {ex.Message}");
         }
+    }
+
+    [HttpGet("{id}")]
+    // [Authorize]
+
+    public IActionResult GetTag(int id)
+    {
+        Tag tag = _dbContext.Tags.SingleOrDefault(t => t.Id == id);
+        if (tag == null)
+        {
+            return NotFound();
+        }
+
+        return Ok(tag);
+    }
+
+    [HttpPut("{id}")]
+    // [Authorize]
+
+    public IActionResult Put(int id, EditTagDTO tag)
+    {
+        if (id != tag.Id)
+        {
+            return BadRequest();
+        }
+
+        var existingTag = _dbContext.Tags.FirstOrDefault(t => t.Id == id);
+        if (existingTag == null)
+        {
+            return NotFound();
+        }
+
+        existingTag.TagName = tag.TagName;
+
+        _dbContext.Tags.Update(existingTag);
+        _dbContext.SaveChanges();
+
+        return NoContent();
     }
 }
