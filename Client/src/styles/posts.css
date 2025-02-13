@@ -86,3 +86,14 @@
 .post-details-tags-container h6 {
   color: #343a40;
 }
+
+.new-post-container {
+  width: 60%;
+  margin: 0 auto;
+  border: 1px solid #343a40;
+  padding: 4rem 8rem;
+}
+
+.post-input {
+  width: 65%;
+}
