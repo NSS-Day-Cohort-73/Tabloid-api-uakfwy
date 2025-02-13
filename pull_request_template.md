@@ -1,4 +1,5 @@
 Related Issue:
+relates NSS-Day-Cohort-73/Tabloid-client-uakfwy
 
 Changes:
 

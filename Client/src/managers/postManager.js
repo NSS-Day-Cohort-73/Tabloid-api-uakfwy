@@ -47,3 +47,19 @@ export const getPostById = async (postId) => {
   }
   return response.json();
 };
+
+//Creates a new post
+//userId is a required query parameter associating a post with the logged in user
+export const addNewPost = async (userId, postObj) => {
+  const response = await fetch(`${apiString}?userId=${userId}`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(postObj),
+  });
+  if (!response.ok) {
+    throw new Error(`HTTP error! Status${response.status}`);
+  }
+  return response.json();
+};
