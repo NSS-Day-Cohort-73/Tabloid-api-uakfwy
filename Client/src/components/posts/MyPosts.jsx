@@ -5,11 +5,11 @@ export const MyPosts = ({ loggedInUser }) => {
   const [userPosts, setUserPosts] = useState([]);
 
   useEffect(() => {
-    getAllPosts();
-  }, []);
+    getAllPosts((null, loggedInUser.id, null)).then(setUserPosts);
+  }, [loggedInUser]);
   return (
     <div className="container">
-      <h2>My Posts</h2>
+      <h2 className="text-center mt-5">My Posts</h2>
     </div>
   );
 };
