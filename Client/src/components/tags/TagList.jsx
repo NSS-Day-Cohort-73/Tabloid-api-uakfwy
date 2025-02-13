@@ -30,6 +30,13 @@ export default function TagList() {
           {tags.map((tag) => (
             <tr key={tag.id}>
               <td>{tag.tagName}</td>
+              <td>
+                <Link to={`/tags/edit/${tag.id}`}>
+                  <Button color="info" size="sm" className="me-2">
+                    Edit
+                  </Button>
+                </Link>
+              </td>
             </tr>
           ))}
         </tbody>
