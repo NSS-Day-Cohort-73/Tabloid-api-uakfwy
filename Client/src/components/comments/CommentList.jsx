@@ -109,8 +109,8 @@ export default function CommentList({ loggedInUser, postId }) {
 
   return (
     <div className="text-center container mt-4">
-      <h2>Comments</h2>
-      <div className="container">
+      <h2 className="mb-4">Comments</h2>
+      <div style={{ width: "75%", margin: "auto" }}>
         <div className="border rounded p-3 shadow-sm d-flex justify-content-between align-items-center">
           <input
             className="form-control me-2"
@@ -123,29 +123,28 @@ export default function CommentList({ loggedInUser, postId }) {
           </button>
         </div>
       </div>
-      <div className="container mt-3">
+      <div style={{ width: "75%", margin: "auto" }} className="mt-4">
         {comments.map((c) => (
           <div
             key={c.id}
             className="border rounded p-3 shadow-sm d-flex mb-3"
             style={{ minHeight: "80px" }}
           >
-            <div
-              className="d-flex flex-column align-items-center"
-              style={{ width: "200px" }}
-            >
+            <div className="d-flex align-items-center gap-3">
               <img
                 src={c.userProfile.imageLocation}
-                className="img-fluid rounded-circle mb-2"
-                style={{ height: "80px", width: "80px", objectFit: "cover" }}
+                className="rounded-circle"
+                style={{ height: "60px", width: "60px", objectFit: "cover" }}
                 alt="profile picture"
               />
-              <h5 className="mb-1">{c.userProfile.fullName}</h5>
-              <small className="text-muted">
-                {new Date(c.dateSubmitted).toLocaleDateString()}
-              </small>
+              <div>
+                <h6 className="mb-1">{c.userProfile.fullName}</h6>
+                <small className="text-muted">
+                  {new Date(c.dateSubmitted).toLocaleDateString()}
+                </small>
+              </div>
             </div>
-            <div className="flex-grow-1 ms-3">
+            <div className="flex-grow-1 ms-4" style={{ maxWidth: "60%" }}>
               {currentEditCommentId === c.id ? (
                 <div className="d-flex gap-2">
                   <textarea
