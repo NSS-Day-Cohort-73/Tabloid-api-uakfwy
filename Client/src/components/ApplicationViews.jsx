@@ -9,7 +9,6 @@ import CategoryList from "./category/CategoryList";
 import { AllPosts } from "./posts/AllPosts";
 import { PostDetails } from "./posts/PostDetails";
 import { NewPost } from "./posts/NewPost";
-import CommentList from "./comments/CommentList";
 import { MyPosts } from "./posts/MyPosts";
 import { EditTag } from "./tags/EditTag";
 
@@ -30,7 +29,7 @@ export default function ApplicationViews({ loggedInUser, setLoggedInUser }) {
             path=":id"
             element={
               <AuthorizedRoute loggedInUser={loggedInUser}>
-                Post Details
+                <PostDetails loggedInUser={loggedInUser} />
               </AuthorizedRoute>
             }
           />

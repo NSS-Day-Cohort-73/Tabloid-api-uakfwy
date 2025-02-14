@@ -15,6 +15,7 @@ import {
   Row,
 } from "reactstrap";
 import "../../styles/posts.css";
+import { useNavigate } from "react-router-dom";
 
 export const MyPosts = ({ loggedInUser }) => {
   const [userPosts, setUserPosts] = useState([]);
@@ -22,6 +23,8 @@ export const MyPosts = ({ loggedInUser }) => {
   const [deleteTarget, setDeleteTarget] = useState({});
 
   const toggle = () => setModal(!modal);
+
+  const navigate = useNavigate();
 
   const handleDelete = (postId) => {
     deletePost(postId).then(() => {
@@ -37,7 +40,11 @@ export const MyPosts = ({ loggedInUser }) => {
       <h2 className="text-center mt-5 mb-5">My Posts</h2>
       <div className="my-posts-container">
         {userPosts.map((p) => (
-          <Card key={p.id} className="mb-4 my-posts-card">
+          <Card
+            key={p.id}
+            className="mb-4 my-posts-card"
+            onClick={() => navigate(`/posts/${p.id}`)}
+          >
             <Row>
               {p.imageUrl && (
                 <Col>
@@ -77,10 +84,19 @@ export const MyPosts = ({ loggedInUser }) => {
                   <CardText>{`${p.body.slice(0, 200)}...`}</CardText>
                   {p.imageUrl && (
                     <div>
-                      <Button className="my-post-edit">Edit</Button>
+                      <Button
+                        className="my-post-edit"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          navigate(`/posts/${p.id}/edit`);
+                        }}
+                      >
+                        Edit
+                      </Button>
                       <Button
                         className="my-post-delete my-post-delete-img"
-                        onClick={() => {
+                        onClick={(e) => {
+                          e.stopPropagation();
                           toggle();
                           setDeleteTarget({
                             id: p.id,
@@ -98,12 +114,21 @@ export const MyPosts = ({ loggedInUser }) => {
             {!p.imageUrl && (
               <Row className="d-flex justify-content-around">
                 <Col className="d-flex justify-content-around">
-                  <Button className="btn my-post-edit mb-2">Edit</Button>
+                  <Button
+                    className="btn my-post-edit mb-2"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      navigate(`/posts/${p.id}/edit`);
+                    }}
+                  >
+                    Edit
+                  </Button>
                 </Col>
                 <Col className="d-flex justify-content-around">
                   <Button
                     className="btn my-post-delete mb-2"
                     onClick={(e) => {
+                      e.stopPropagation();
                       toggle();
                       setDeleteTarget({ id: p.id, title: p.title });
                     }}
