@@ -21,198 +21,226 @@ public class PostController : ControllerBase
 
     [HttpGet]
     [Authorize]
-    public IActionResult GetAll([FromQuery] int? count, [FromQuery] int? userId, [FromQuery] int? tagId)
+    public IActionResult GetAll(
+        [FromQuery] int? count,
+        [FromQuery] int? userId,
+        [FromQuery] int? tagId,
+        [FromQuery] int? categoryId
+    )
     {
         try
         {
-        IQueryable<Post> query = _dbContext
-        .Posts
-        .Include(p => p.UserProfile)
-            .ThenInclude(u => u.IdentityUser)
-        .Include(p => p.Category)
-        .Include(p => p.PostTags)
-            .ThenInclude(pt => pt.Tag)
-        .Where(p => p.Approved == true)
-        .Where(p => p.PublishDate <= DateTime.Now);
+            IQueryable<Post> query = _dbContext
+                .Posts.Include(p => p.UserProfile)
+                .ThenInclude(u => u.IdentityUser)
+                .Include(p => p.Category)
+                .Include(p => p.PostTags)
+                .ThenInclude(pt => pt.Tag)
+                .Where(p => p.Approved == true)
+                .Where(p => p.PublishDate <= DateTime.Now);
 
-        if (count.HasValue)
-        {
-            if (count.Value <= 0)
+            if (count.HasValue)
             {
-                return BadRequest("Count must be a positive integer");
-            }
-            query = query.Take(count.Value);
-        }
-
-        if (userId.HasValue)
-        {
-            bool userExists = _dbContext.UserProfiles.Any(u => u.Id == userId.Value);
-            if (!userExists)
-            {
-                return NotFound("User does not exist.");
-            }
-            query = query.Where(p => p.UserProfileId == userId);
-        }
-
-        if (tagId.HasValue)
-        {
-            bool tagExists = _dbContext.Tags.Any(t => t.Id == tagId);
-            if (!tagExists)
-            {
-                return NotFound("That tag doesn't exist.");
-            }
-
-            query = query.Where(p => p.PostTags.Any(pt => pt.Id == tagId));
-        }
-        
-
-        query = query.OrderByDescending(p => p.PublishDate);
-
-        return Ok(query
-        .Select(p => new PostDTO
-        {
-            Id = p.Id,
-            UserProfileId = p.UserProfileId,
-            UserProfile = new UserProfileDTO
-            {
-                Id = p.UserProfileId,
-                FirstName = p.UserProfile.FirstName,
-                LastName = p.UserProfile.LastName,
-                UserName = p.UserProfile.IdentityUser.UserName,
-                Email = p.UserProfile.IdentityUser.Email,
-            },
-            Title = p.Title,
-            SubTitle = p.SubTitle,
-            Body = p.Body,
-            CategoryId = p.CategoryId != null ? p.CategoryId : null,
-            Category = p.CategoryId != null ? new CategoryDTO
-            {
-                Id = p.Category.Id,
-                CategoryName = p.Category.CategoryName
-            } : null,
-            PublishDate = p.PublishDate,
-            PostTags = p.PostTags.Select(pt => new PostTagDTO
-            {
-                Id = pt.Id,
-                PostId = pt.PostId,
-                TagId = pt.TagId,
-                Tag = new TagDTO
+                if (count.Value <= 0)
                 {
-                    Id = pt.Tag.Id,
-                    TagName = pt.Tag.TagName
+                    return BadRequest("Count must be a positive integer");
                 }
-            }).ToList(),
-            ImageUrl = p.ImageUrl
-        }));
+                query = query.Take(count.Value);
+            }
+
+            if (userId.HasValue)
+            {
+                bool userExists = _dbContext.UserProfiles.Any(u => u.Id == userId.Value);
+                if (!userExists)
+                {
+                    return NotFound("User does not exist.");
+                }
+                query = query.Where(p => p.UserProfileId == userId);
+            }
+
+            if (tagId.HasValue)
+            {
+                bool tagExists = _dbContext.Tags.Any(t => t.Id == tagId);
+                if (!tagExists)
+                {
+                    return NotFound("That tag doesn't exist.");
+                }
+
+                query = query.Where(p => p.PostTags.Any(pt => pt.Id == tagId));
+            }
+            if (categoryId.HasValue)
+            {
+                bool categoryExists = _dbContext.Categories.Any(c => c.Id == categoryId);
+                if (!categoryExists)
+                {
+                    return NotFound("That category doesn't exist.");
+                }
+
+                query = query.Where(p => p.CategoryId == categoryId);
+            }
+
+            query = query.OrderByDescending(p => p.PublishDate);
+
+            return Ok(
+                query.Select(p => new PostDTO
+                {
+                    Id = p.Id,
+                    UserProfileId = p.UserProfileId,
+                    UserProfile = new UserProfileDTO
+                    {
+                        Id = p.UserProfileId,
+                        FirstName = p.UserProfile.FirstName,
+                        LastName = p.UserProfile.LastName,
+                        UserName = p.UserProfile.IdentityUser.UserName,
+                        Email = p.UserProfile.IdentityUser.Email,
+                    },
+                    Title = p.Title,
+                    SubTitle = p.SubTitle,
+                    Body = p.Body,
+                    CategoryId = p.CategoryId != null ? p.CategoryId : null,
+                    Category =
+                        p.CategoryId != null
+                            ? new CategoryDTO
+                            {
+                                Id = p.Category.Id,
+                                CategoryName = p.Category.CategoryName,
+                            }
+                            : null,
+                    PublishDate = p.PublishDate,
+                    PostTags = p
+                        .PostTags.Select(pt => new PostTagDTO
+                        {
+                            Id = pt.Id,
+                            PostId = pt.PostId,
+                            TagId = pt.TagId,
+                            Tag = new TagDTO { Id = pt.Tag.Id, TagName = pt.Tag.TagName },
+                        })
+                        .ToList(),
+                    ImageUrl = p.ImageUrl,
+                })
+            );
         }
         catch (Exception ex)
         {
             return StatusCode(500, $"An error occurred while processing your request {ex.Message}");
         }
-        
     }
 
     [HttpGet("{id}")]
     [Authorize]
     public IActionResult GetById(int id)
     {
-        try 
+        try
         {
-        Post post = _dbContext
-        .Posts
-        .Include(p => p.Comments)
-            .ThenInclude(c => c.UserProfile)
+            Post post = _dbContext
+                .Posts.Include(p => p.Comments)
+                .ThenInclude(c => c.UserProfile)
                 .ThenInclude(up => up.IdentityUser)
-        .Include(p => p.Category)
-        .Include(p => p.PostTags)
-            .ThenInclude(pt => pt.Tag)
-        .Include(p => p.PostReactions)
-            .ThenInclude(pr => pr.Reaction)
-        .Include(p => p.PostReactions)
-            .ThenInclude(pr => pr.UserProfile)
+                .Include(p => p.Category)
+                .Include(p => p.PostTags)
+                .ThenInclude(pt => pt.Tag)
+                .Include(p => p.PostReactions)
+                .ThenInclude(pr => pr.Reaction)
+                .Include(p => p.PostReactions)
+                .ThenInclude(pr => pr.UserProfile)
                 .ThenInclude(up => up.IdentityUser)
-        .Include(p => p.UserProfile)
-            .ThenInclude(up => up.IdentityUser)
-        .SingleOrDefault(p => p.Id == id);
+                .Include(p => p.UserProfile)
+                .ThenInclude(up => up.IdentityUser)
+                .SingleOrDefault(p => p.Id == id);
 
-        if (post == null)
-        {
-            return NotFound("Post not found");
-        } 
-        else if (id <= 0)
-        {
-            return BadRequest("Id needs to be a positive integer");
-        }
-    Console.WriteLine($"PostReactions count: {post.PostReactions?.Count()}"); // Debugging line
+            if (post == null)
+            {
+                return NotFound("Post not found");
+            }
+            else if (id <= 0)
+            {
+                return BadRequest("Id needs to be a positive integer");
+            }
+            Console.WriteLine($"PostReactions count: {post.PostReactions?.Count()}"); // Debugging line
 
-        return Ok(new PostDTO
-        {
-            Id = post.Id,
-            UserProfileId = post.UserProfileId,
-            UserProfile = new UserProfileDTO
-            {
-                Id = post.UserProfile.Id,
-                UserName = post.UserProfile.IdentityUser.UserName,
-                ImageLocation = post.UserProfile.ImageLocation
-            },
-            Title = post.Title,
-            SubTitle = post.SubTitle != null ? post.SubTitle : null,
-            Body = post.Body,
-            CategoryId = post.CategoryId != null ? post.CategoryId : null,
-            Category = post.CategoryId != null ? new CategoryDTO
-            {
-                Id = post.Category.Id,
-                CategoryName = post.Category.CategoryName
-            } : null,
-            PostTags = post.PostTags != null ? post.PostTags.Select(pt => new PostTagDTO
-            {
-                Id = pt.Id,
-                TagId = pt.TagId,
-                Tag = new TagDTO
+            return Ok(
+                new PostDTO
                 {
-                    Id = pt.Tag.Id,
-                    TagName = pt.Tag.TagName
+                    Id = post.Id,
+                    UserProfileId = post.UserProfileId,
+                    UserProfile = new UserProfileDTO
+                    {
+                        Id = post.UserProfile.Id,
+                        UserName = post.UserProfile.IdentityUser.UserName,
+                        ImageLocation = post.UserProfile.ImageLocation,
+                    },
+                    Title = post.Title,
+                    SubTitle = post.SubTitle != null ? post.SubTitle : null,
+                    Body = post.Body,
+                    CategoryId = post.CategoryId != null ? post.CategoryId : null,
+                    Category =
+                        post.CategoryId != null
+                            ? new CategoryDTO
+                            {
+                                Id = post.Category.Id,
+                                CategoryName = post.Category.CategoryName,
+                            }
+                            : null,
+                    PostTags =
+                        post.PostTags != null
+                            ? post
+                                .PostTags.Select(pt => new PostTagDTO
+                                {
+                                    Id = pt.Id,
+                                    TagId = pt.TagId,
+                                    Tag = new TagDTO { Id = pt.Tag.Id, TagName = pt.Tag.TagName },
+                                })
+                                .ToList()
+                            : null,
+                    Comments =
+                        post.Comments != null
+                            ? post
+                                .Comments.Select(c => new CommentDTO
+                                {
+                                    Id = c.Id,
+                                    UserProfileId = c.UserProfileId,
+                                    UserProfile = new UserProfileDTO
+                                    {
+                                        Id = c.UserProfile.Id,
+                                        UserName = c.UserProfile.IdentityUser.UserName,
+                                    },
+                                    Body = c.Body,
+                                    DateSubmitted = c.DateSubmitted,
+                                })
+                                .ToList()
+                            : null,
+                    PublishDate = post.PublishDate,
+                    ImageUrl = post.ImageUrl != null ? post.ImageUrl : null,
+                    PostReactions =
+                        post.PostReactions != null
+                            ? post
+                                .PostReactions.Select(pr => new PostReactionDTO
+                                {
+                                    Id = pr.Id,
+                                    PostId = pr.PostId,
+                                    UserProfileId = pr.UserProfileId,
+                                    UserProfile = new UserProfileDTO
+                                    {
+                                        Id = pr.UserProfile.Id,
+                                        UserName = pr.UserProfile.IdentityUser.UserName,
+                                    },
+                                    ReactionId = pr.ReactionId,
+                                    Reaction = new ReactionDTO
+                                    {
+                                        Id = pr.Reaction.Id,
+                                        Name = pr.Reaction.Name,
+                                        Icon = pr.Reaction.Icon,
+                                    },
+                                })
+                                .ToList()
+                            : null,
                 }
-            }).ToList() : null,
-            Comments = post.Comments != null ? post.Comments.Select(c => new CommentDTO
-            {
-                Id = c.Id,
-                UserProfileId = c.UserProfileId,
-                UserProfile = new UserProfileDTO
-                {
-                    Id = c.UserProfile.Id,
-                    UserName = c.UserProfile.IdentityUser.UserName
-                },
-                Body = c.Body,
-                DateSubmitted = c.DateSubmitted
-            }).ToList() : null,
-            PublishDate = post.PublishDate,
-            ImageUrl = post.ImageUrl != null ?  post.ImageUrl : null,
-            PostReactions = post.PostReactions != null ? post.PostReactions.Select(pr => new PostReactionDTO
-            {
-                Id = pr.Id,
-                PostId = pr.PostId,
-                UserProfileId = pr.UserProfileId,
-                UserProfile = new UserProfileDTO
-                 {
-                    Id = pr.UserProfile.Id,
-                    UserName = pr.UserProfile.IdentityUser.UserName
-                 },
-                ReactionId = pr.ReactionId,
-                Reaction = new ReactionDTO
-                {
-                    Id = pr.Reaction.Id,
-                    Name = pr.Reaction.Name,
-                    Icon = pr.Reaction.Icon
-                }
-            }).ToList() : null
-        });
+            );
         }
         catch (Exception ex)
         {
-           return StatusCode(500, $"An error occurred while processing your request {ex.Message}"); 
+            return StatusCode(500, $"An error occurred while processing your request {ex.Message}");
         }
-
     }
 
     [HttpPost]
@@ -221,35 +249,32 @@ public class PostController : ControllerBase
     {
         try
         {
-        UserProfile postUser = _dbContext
-        .UserProfiles
-        .Include(up => up.IdentityUser)
-        .SingleOrDefault(up => up.Id == userId);
+            UserProfile postUser = _dbContext
+                .UserProfiles.Include(up => up.IdentityUser)
+                .SingleOrDefault(up => up.Id == userId);
 
-        if (userId <= 0)
-        {
-            return BadRequest("userId must be a positive integer");
-        }
+            if (userId <= 0)
+            {
+                return BadRequest("userId must be a positive integer");
+            }
 
-        if (postUser == null)
-        {
-            return NotFound("User not found");
-        }
+            if (postUser == null)
+            {
+                return NotFound("User not found");
+            }
 
-        var usersRoles = _dbContext
-        .UserRoles
-        .Where(ur => ur.UserId == postUser.IdentityUserId)
-        .Select(ur => _dbContext.Roles
-        .SingleOrDefault(r => r.Id == ur.RoleId).Name);
+            var usersRoles = _dbContext
+                .UserRoles.Where(ur => ur.UserId == postUser.IdentityUserId)
+                .Select(ur => _dbContext.Roles.SingleOrDefault(r => r.Id == ur.RoleId).Name);
 
-         post.Approved = usersRoles.Contains("Admin") ? true : false;
-        
-       post.UserProfileId = userId;
+            post.Approved = usersRoles.Contains("Admin") ? true : false;
 
-       _dbContext.Posts.Add(post);
-       _dbContext.SaveChanges();
+            post.UserProfileId = userId;
 
-       return Created($"/api/post/{post.Id}", post);
+            _dbContext.Posts.Add(post);
+            _dbContext.SaveChanges();
+
+            return Created($"/api/post/{post.Id}", post);
         }
         catch (Exception ex)
         {
@@ -261,25 +286,23 @@ public class PostController : ControllerBase
     [Authorize]
     public IActionResult Delete(int id)
     {
-        try 
+        try
         {
-        Post post = _dbContext
-        .Posts
-        .SingleOrDefault(p => p.Id == id);
+            Post post = _dbContext.Posts.SingleOrDefault(p => p.Id == id);
 
-        if (post == null)
-        {
-            return NotFound("Post doesn't exist");
-        }
+            if (post == null)
+            {
+                return NotFound("Post doesn't exist");
+            }
 
-        if (id <= 0)
-        {
-            return BadRequest("PostId must be a positive integer");
-        }
+            if (id <= 0)
+            {
+                return BadRequest("PostId must be a positive integer");
+            }
 
-        _dbContext.Posts.Remove(post);
-        _dbContext.SaveChanges();
-        return NoContent();
+            _dbContext.Posts.Remove(post);
+            _dbContext.SaveChanges();
+            return NoContent();
         }
         catch (Exception ex)
         {
