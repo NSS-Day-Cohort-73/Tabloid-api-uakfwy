@@ -74,6 +74,31 @@ export const deletePost = async (postId) => {
   }
 };
 
+export const getPostsByCategoryId = async (categoryId) => {
+  try {
+    const params = new URLSearchParams();
+
+    if (categoryId !== null && categoryId > 0) {
+      params.append("categoryId", categoryId);
+    }
+
+    const url = params.toString()
+      ? `${apiString}?${params.toString()}`
+      : apiString;
+
+    const response = await fetch(url);
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! Status ${response.status}`);
+    }
+
+    return response.json();
+  } catch (error) {
+    console.error("Error fetching posts by category:", error);
+    return null;
+  }
+};
+
 //Updates an existing Post
 //Expects the Updated Post Object
 export const updatePost = async (postObj) => {
