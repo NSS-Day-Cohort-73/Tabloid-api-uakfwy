@@ -9,7 +9,7 @@ import CategoryList from "./category/CategoryList";
 import { AllPosts } from "./posts/AllPosts";
 import { PostDetails } from "./posts/PostDetails";
 import { NewPost } from "./posts/NewPost";
-import CommentList from "./comments/CommentList";
+import { MyPosts } from "./posts/MyPosts";
 import { EditTag } from "./tags/EditTag";
 
 export default function ApplicationViews({ loggedInUser, setLoggedInUser }) {
@@ -29,7 +29,7 @@ export default function ApplicationViews({ loggedInUser, setLoggedInUser }) {
             path=":id"
             element={
               <AuthorizedRoute loggedInUser={loggedInUser}>
-                Post Details
+                <PostDetails loggedInUser={loggedInUser} />
               </AuthorizedRoute>
             }
           />
@@ -38,6 +38,14 @@ export default function ApplicationViews({ loggedInUser, setLoggedInUser }) {
             element={
               <AuthorizedRoute loggedInUser={loggedInUser}>
                 <NewPost loggedInUser={loggedInUser} />
+              </AuthorizedRoute>
+            }
+          />
+          <Route
+            path="myposts"
+            element={
+              <AuthorizedRoute loggedInUser={loggedInUser}>
+                <MyPosts loggedInUser={loggedInUser} />
               </AuthorizedRoute>
             }
           />
@@ -61,22 +69,22 @@ export default function ApplicationViews({ loggedInUser, setLoggedInUser }) {
           />
         </Route>
         <Route path="/tags">
-            <Route
-              index
-              element={
-                <AuthorizedRoute loggedInUser={loggedInUser} roles={["Admin"]}>
-                  <TagList />
-                </AuthorizedRoute>
-              }
-          />  
-            <Route
-              path="edit/:id"
-              element={
-                <AuthorizedRoute loggedInUser={loggedInUser} roles={["Admin"]}>
-                  <EditTag />
-                </AuthorizedRoute>
-              }
-          />    
+          <Route
+            index
+            element={
+              <AuthorizedRoute loggedInUser={loggedInUser} roles={["Admin"]}>
+                <TagList />
+              </AuthorizedRoute>
+            }
+          />
+          <Route
+            path="edit/:id"
+            element={
+              <AuthorizedRoute loggedInUser={loggedInUser} roles={["Admin"]}>
+                <EditTag />
+              </AuthorizedRoute>
+            }
+          />
         </Route>
         <Route
           path="login"

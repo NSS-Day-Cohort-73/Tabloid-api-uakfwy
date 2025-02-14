@@ -115,10 +115,12 @@ export const AllPosts = () => {
                                 >{`Author: ${p.userProfile?.userName}`}</CardSubtitle>
                               </Col>
                             </Row>
-                            <CardText className="mb-3">{`${p.body.slice(
-                              0,
-                              100
-                            )}...`}</CardText>
+                            {p.imageUrl && (
+                              <CardText className="mb-3">{`${p.body.slice(
+                                0,
+                                100
+                              )}...`}</CardText>
+                            )}
                             <Row>
                               <Col>
                                 <CardSubtitle
@@ -130,15 +132,23 @@ export const AllPosts = () => {
                               </Col>
                               <Col>{`Read Time: `}</Col>
                             </Row>
+                            {!p.imageUrl && (
+                              <CardText className="mb-3">{`${p.body.slice(
+                                0,
+                                100
+                              )}...`}</CardText>
+                            )}
                           </CardBody>
                         </Col>
-                        <Col>
-                          <img
-                            alt={`Image for the post ${p.title}`}
-                            src={p.imageUrl}
-                            className="img-fluid"
-                          />
-                        </Col>
+                        {p.imageUrl && (
+                          <Col>
+                            <img
+                              alt={`Image for the post ${p.title}`}
+                              src={p.imageUrl}
+                              className="img-fluid"
+                            />
+                          </Col>
+                        )}
                       </Row>
                     </Card>
                   ))}

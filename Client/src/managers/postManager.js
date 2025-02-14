@@ -63,3 +63,13 @@ export const addNewPost = async (userId, postObj) => {
   }
   return response.json();
 };
+
+//Deletes a post specified by the postId
+export const deletePost = async (postId) => {
+  const response = await fetch(`${apiString}/${postId}`, {
+    method: "DELETE",
+  });
+  if (!response.ok) {
+    throw new Error(`HTTP Error! Status ${response.status}`);
+  }
+};

@@ -1,5 +1,4 @@
-Related Issue:
-relates NSS-Day-Cohort-73/Tabloid-client-uakfwy
+Related Issue: relates
 
 Changes:
 
@@ -10,4 +9,4 @@ Readme Info:
 
 Any other Testing Steps:
 
-closes NSS-Day-Cohort-73/Tabloid-client-uakfwy
+closes
