@@ -36,6 +36,12 @@
   margin-left: 2.8rem;
 }
 
+.edit-saveChanges,
+.edit-cancel {
+  width: 18%;
+  margin: 0 auto;
+}
+
 .postCard {
   width: 40%;
   height: 20%;

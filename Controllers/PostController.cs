@@ -309,4 +309,33 @@ public class PostController : ControllerBase
             return StatusCode(500, $"Error processing your request {ex.Message}");
         }
     }
+
+    [HttpPut("{id}")]
+    [Authorize]
+    public IActionResult UpdatePost(int id, PostDTO post) 
+    {
+        try
+        {
+        Post postToEdit = _dbContext
+        .Posts
+        .SingleOrDefault(p => p.Id == id);
+
+        if (postToEdit == null)
+        {
+            return NotFound("That post does not exist");
+        }
+
+        postToEdit.Title = post.Title;
+        postToEdit.SubTitle = post.SubTitle;
+        postToEdit.CategoryId = post.CategoryId;
+        postToEdit.Body = post.Body;
+
+        _dbContext.SaveChanges();
+        return NoContent();
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, $"There was an error processing your request {ex.Message}");
+        }
+    }
 }
