@@ -73,3 +73,18 @@ export const deletePost = async (postId) => {
     throw new Error(`HTTP Error! Status ${response.status}`);
   }
 };
+
+//Updates an existing Post
+//Expects the Updated Post Object
+export const updatePost = async (postObj) => {
+  const response = await fetch(`${apiString}/${postObj.id}`, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(postObj),
+  });
+  if (!response.ok) {
+    throw new Error(`HTTP Error! Status ${response.status}`);
+  }
+};
