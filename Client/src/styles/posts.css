@@ -1,3 +1,41 @@
+.my-posts-container {
+  width: 50%;
+  margin: 0 auto;
+}
+
+.my-posts-card {
+  cursor: pointer;
+}
+
+.my-posts-card:hover {
+  box-shadow: 0 0 0.1rem gray;
+}
+
+.my-post-edit {
+  background-color: #5bb8a6;
+  width: 40%;
+}
+
+.my-post-edit:hover {
+  border: 1px solid #5bb8a6;
+  background-color: whitesmoke;
+  color: #5bb8a6;
+}
+
+.my-post-delete:hover {
+  border: 1px solid #db534b;
+  background-color: whitesmoke;
+  color: #db534b;
+}
+
+.my-post-delete {
+  background-color: #db534b;
+  width: 40%;
+}
+.my-post-delete-img {
+  margin-left: 2.8rem;
+}
+
 .postCard {
   width: 40%;
   height: 20%;

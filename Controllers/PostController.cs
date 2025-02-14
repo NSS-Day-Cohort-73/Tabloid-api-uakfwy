@@ -256,4 +256,34 @@ public class PostController : ControllerBase
             return StatusCode(500, $"An error occurred while processing your request {ex.Message}");
         }
     }
+
+    [HttpDelete("{id}")]
+    [Authorize]
+    public IActionResult Delete(int id)
+    {
+        try 
+        {
+        Post post = _dbContext
+        .Posts
+        .SingleOrDefault(p => p.Id == id);
+
+        if (post == null)
+        {
+            return NotFound("Post doesn't exist");
+        }
+
+        if (id <= 0)
+        {
+            return BadRequest("PostId must be a positive integer");
+        }
+
+        _dbContext.Posts.Remove(post);
+        _dbContext.SaveChanges();
+        return NoContent();
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, $"Error processing your request {ex.Message}");
+        }
+    }
 }
