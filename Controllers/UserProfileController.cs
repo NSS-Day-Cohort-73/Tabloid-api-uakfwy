@@ -88,6 +88,10 @@ public class UserProfileController : ControllerBase
         }
         user.Email = user.IdentityUser.Email;
         user.UserName = user.IdentityUser.UserName;
+        user.Roles = _dbContext
+            .UserRoles.Where(ur => ur.UserId == user.IdentityUser.Id)
+            .Select(ur => _dbContext.Roles.FirstOrDefault(r => r.Id == ur.RoleId).Name)
+            .ToList();
         return Ok(user);
     }
 }

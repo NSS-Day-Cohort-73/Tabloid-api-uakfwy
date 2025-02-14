@@ -26,7 +26,14 @@ export default function UserProfileDetails() {
             src={userProfile.imageLocation}
             alt={userProfile.firstName}
           />
-          <h3 className="mt-3 text-primary">{userProfile.fullName}</h3>
+          <h3
+            className="mt-3"
+            style={{
+              color: "#5bb8a6",
+            }}
+          >
+            {userProfile.fullName}
+          </h3>
           <div className="mt-3">
             <div className="p-3">
               <p className="mb-2">
@@ -42,11 +49,15 @@ export default function UserProfileDetails() {
                 {new Date(userProfile.createDateTime).toLocaleDateString()}
               </p>
               <p>
-                {userProfile.roles ? (
-                  <span className="badge bg-primary">ADMIN</span>
-                ) : (
-                  <span className="badge bg-secondary">USER</span>
-                )}
+                <span
+                  className="badge ms-2"
+                  style={{
+                    backgroundColor: "#5bb8a6",
+                    color: "white",
+                  }}
+                >
+                  {userProfile.roles[0] ? userProfile.roles : "USER"}
+                </span>
               </p>
             </div>
           </div>
