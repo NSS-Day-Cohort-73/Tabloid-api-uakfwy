@@ -1,0 +1,9 @@
+.btn-custom-green {
+  color: #5bb8a6 !important;
+  border-color: #5bb8a6 !important;
+}
+
+.btn-custom-green:hover {
+  color: white !important;
+  background-color: #5bb8a6 !important;
+}
