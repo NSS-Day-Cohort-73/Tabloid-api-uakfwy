@@ -39,3 +39,19 @@ export const removeReaction = async (postReactionId) => {
     throw new Error(`HTTP error! Status ${response.status}`);
   }
 };
+
+export const postANewReaction = async (reaction) => {
+  const response = await fetch("/api/reaction", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(reaction),
+  });
+
+  if (!response.ok) {
+    throw new Error(`HTTP error! Status ${response.status}`);
+  }
+
+  return response.json();
+};
