@@ -20,6 +20,14 @@ export const AllPosts = () => {
   useState(() => {
     getAllPosts().then(setPosts);
   }, []);
+
+  const handleReadTimeCalc = (body) => {
+    if (!body) return "0 minutes";
+    const wordCount = body.split(/\s+/).length;
+    const readTimeMinutes = Math.ceil(wordCount / 265);
+    return readTimeMinutes === 1 ? "1 minute" : `${readTimeMinutes} minutes`;
+  };
+
   return (
     <div className="container">
       <div className="header mt-4">
@@ -71,7 +79,9 @@ export const AllPosts = () => {
                           <CardSubtitle
                             tag="h6"
                             className="text-muted"
-                          >{`Read Time: `}</CardSubtitle>
+                          >{`Read Time: ${handleReadTimeCalc(
+                            posts[0]?.body
+                          )}`}</CardSubtitle>
                         </Col>
                       </Row>
                       <CardText>
@@ -130,7 +140,9 @@ export const AllPosts = () => {
                                   p.publishDate.split("T")[0]
                                 }`}</CardSubtitle>
                               </Col>
-                              <Col>{`Read Time: `}</Col>
+                              <Col>{`Read Time: ${handleReadTimeCalc(
+                                p?.body
+                              )}`}</Col>
                             </Row>
                             {!p.imageUrl && (
                               <CardText className="mb-3">{`${p.body.slice(
