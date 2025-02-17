@@ -22,7 +22,7 @@ public class UserProfileController : ControllerBase
     [Authorize]
     public IActionResult Get([FromQuery] int? authorCount)
     {
-        IQueryable<UserProfile> userProfiles = _dbContext.UserProfiles;
+        IQueryable<UserProfile> userProfiles = _dbContext.UserProfiles.Include(up => up.IdentityUser);
 
         if (authorCount.HasValue)
         {

@@ -37,7 +37,7 @@ export const AllPosts = ({ loggedInUser }) => {
         </Row>
       </div>
       <Row>
-        <Col md={10}>
+        <Col md={9}>
           <div id="postsContainer">
             <Row>
               <Col className="latestPost-container">
@@ -129,7 +129,7 @@ export const AllPosts = ({ loggedInUser }) => {
                             {p.imageUrl && (
                               <CardText className="mb-3">{`${p.body.slice(
                                 0,
-                                100
+                                50
                               )}...`}</CardText>
                             )}
                             <Row>
@@ -168,9 +168,31 @@ export const AllPosts = ({ loggedInUser }) => {
             </Row>
           </div>
         </Col>
-        <Col md={2}>
+        <Col md={3}>
           <div id="newAuthorsContainer">
-            <div id="newAuthorsHeader"></div>
+            {newAuthors.map((a) => (
+              <Card key={a.id} className="mb-3">
+                <CardBody>
+                  <Row className="d-flex">
+                    <Col className="d-flex align-items-center">
+                      <img
+                        alt={`${a.identityUser?.userName} profile picture`}
+                        src={a.imageLocation}
+                        className="img-fluid"
+                      ></img>
+                    </Col>
+                    <Col className="d-flex align-items-center">
+                      <CardText>{a.identityUser?.userName}</CardText>
+                    </Col>
+                    <Col className="d-flex align-items-center">
+                      <CardText>{`Joined on: ${
+                        a.createDateTime?.split("T")[0]
+                      }`}</CardText>
+                    </Col>
+                  </Row>
+                </CardBody>
+              </Card>
+            ))}
           </div>
         </Col>
       </Row>
