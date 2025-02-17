@@ -58,7 +58,7 @@ public class TagController : ControllerBase
     }
 
     [HttpGet("{id}")]
-    // [Authorize]
+    [Authorize]
 
     public IActionResult GetTag(int id)
     {
@@ -72,7 +72,7 @@ public class TagController : ControllerBase
     }
 
     [HttpPut("{id}")]
-    // [Authorize]
+    [Authorize]
 
     public IActionResult Put(int id, EditTagDTO tag)
     {

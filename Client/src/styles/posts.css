@@ -151,3 +151,16 @@
 .post-input {
   width: 85%;
 }
+
+.tag-card {
+  box-shadow: 0 0 0.1rem gray;
+  cursor: pointer;
+}
+
+.tag-card:hover {
+  box-shadow: 0 0 0.3rem gray;
+}
+.hasTag {
+  background-color: #aaffee;
+  color: #db534b;
+}
