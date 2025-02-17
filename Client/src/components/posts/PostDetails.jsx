@@ -124,7 +124,7 @@ export const PostDetails = ({ loggedInUser }) => {
 
   const handleTagChange = (tagId) => {
     const postTagObj = {
-      postId: id,
+      postId: parseInt(id),
       tagId: tagId,
     };
     if (postTags.some((pt) => pt.id === tagId)) {

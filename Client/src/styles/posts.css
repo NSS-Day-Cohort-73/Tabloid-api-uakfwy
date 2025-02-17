@@ -161,6 +161,8 @@
   box-shadow: 0 0 0.3rem gray;
 }
 .hasTag {
-  background-color: #aaffee;
+  background-color: #9ed0e7;
   color: #db534b;
+  font-weight: bold;
+  text-shadow: 0 0 0.1rem white;
 }

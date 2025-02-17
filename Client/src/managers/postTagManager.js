@@ -24,8 +24,10 @@ export const deletePostTag = async (postTag) => {
     headers: {
       "Content-Type": "application/json",
     },
+    body: JSON.stringify(postTag),
   });
   if (!response.ok) {
     throw new Error(`HTTP Error! Status ${response.status}`);
   }
+  return response;
 };
