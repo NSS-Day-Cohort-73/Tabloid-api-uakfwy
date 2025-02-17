@@ -12,6 +12,7 @@ import { NewPost } from "./posts/NewPost";
 import { MyPosts } from "./posts/MyPosts";
 import { EditTag } from "./tags/EditTag";
 import ReactionsList from "./reactions/ReactionsList";
+import { SubscribedPosts } from "./posts/SubscribedPosts";
 
 export default function ApplicationViews({ loggedInUser, setLoggedInUser }) {
   return (
@@ -48,6 +49,17 @@ export default function ApplicationViews({ loggedInUser, setLoggedInUser }) {
             element={
               <AuthorizedRoute loggedInUser={loggedInUser}>
                 <MyPosts loggedInUser={loggedInUser} />
+              </AuthorizedRoute>
+            }
+          />
+        </Route>
+
+        <Route path="/subscribed">
+          <Route
+            index
+            element={
+              <AuthorizedRoute loggedInUser={loggedInUser}>
+                <SubscribedPosts loggedInUser={loggedInUser} />
               </AuthorizedRoute>
             }
           />
