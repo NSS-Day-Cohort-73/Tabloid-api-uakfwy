@@ -70,6 +70,11 @@ export default function NavBar({ loggedInUser, setLoggedInUser }) {
                         Tags
                       </NavLink>
                     </NavItem>
+                    <NavItem>
+                      <NavLink tag={RRNavLink} to="/reactions">
+                        Reactions
+                      </NavLink>
+                    </NavItem>
                   </>
                 )}
               </Nav>
