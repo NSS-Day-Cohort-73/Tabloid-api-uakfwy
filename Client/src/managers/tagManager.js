@@ -57,4 +57,15 @@ export const addTag = (tag) => {
         throw new Error(`HTTP error! Status: ${res.status}`);
       }
   })
-}
+};
+
+export const deleteTag = (id) => {
+  return fetch(`${apiUrl}/${id}`, {
+      method: "DELETE"
+  })
+  .then((res) => {
+      if (!res.ok) {
+          throw new Error(`HTTP error! Status: ${res.status}`);
+      }
+  });
+};
