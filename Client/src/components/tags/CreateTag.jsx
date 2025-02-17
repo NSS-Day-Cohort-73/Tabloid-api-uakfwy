@@ -6,26 +6,37 @@ export default function CreateTag() {
     const [tagName, setTagName] = useState('');
     const navigate = useNavigate();
 
+    const handleChange = (e) => {
+        let value = e.target.value;
+    
+        // Always ensure the first character is '#'
+        if (!value.startsWith('#')) {
+            value = '#' + value.replace(/^#/, '');
+        }
+    
+        setTagName(value);
+    };
+    
+    
     const handleSave = (e) => {
         e.preventDefault();
-        
-        if (tagName.trim()) {
-            const newTag = {
-                tagName: tagName.trim()
-            };
-
-            addTag(newTag)
-                .then(() => {
-                    navigate('/tags');
-                })
-                .catch(error => {
-                    console.error('Error creating tag:', error);
-                    alert('Failed to create tag. Please try again.'); 
-                });
-        } else {
-            alert('Please enter a tag name');
+    
+        if (tagName === '#' || tagName.trim() === '') {
+            alert('Tag name cannot be empty.');
+            return;
         }
+    
+        const newTag = { tagName: tagName.trim() };
+    
+        addTag(newTag)
+            .then(() => navigate('/tags'))
+            .catch(error => {
+                console.error('Error creating tag:', error);
+                alert('Failed to create tag. Please try again.');
+            });
     };
+    
+    
 
     return (
         <div className="container mt-5">
@@ -41,7 +52,7 @@ export default function CreateTag() {
                                 id="tagName"
                                 name="tagName"
                                 value={tagName}
-                                onChange={(e) => setTagName(e.target.value)}
+                                onChange={handleChange}
                                 required
                             />
                         </div>
