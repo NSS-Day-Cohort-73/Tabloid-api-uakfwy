@@ -12,6 +12,7 @@ import { NewPost } from "./posts/NewPost";
 import { MyPosts } from "./posts/MyPosts";
 import { EditTag } from "./tags/EditTag";
 import { EditPost } from "./posts/EditPost";
+import CreateTag from "./tags/CreateTag";
 
 export default function ApplicationViews({ loggedInUser, setLoggedInUser }) {
   return (
@@ -95,6 +96,14 @@ export default function ApplicationViews({ loggedInUser, setLoggedInUser }) {
               </AuthorizedRoute>
             }
           />
+          <Route
+            path="create"
+            element={
+              <AuthorizedRoute loggedInUser={loggedInUser} roles={["Admin"]}>
+                <CreateTag />
+              </AuthorizedRoute>
+            }
+          />  
         </Route>
         <Route
           path="login"

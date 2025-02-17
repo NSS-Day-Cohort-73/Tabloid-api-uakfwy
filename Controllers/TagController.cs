@@ -22,11 +22,11 @@ public class TagController : ControllerBase
     [HttpGet]
     public IActionResult Get([FromQuery] int? postId)
     {
-        try 
+        try
         {
-        IQueryable<Tag> query = _dbContext.Tags
-            .Include(t => t.PostTags)
-            .OrderBy(t => t.TagName);
+            IQueryable<Tag> query = _dbContext.Tags
+                .Include(t => t.PostTags)
+                .OrderBy(t => t.TagName);
 
             if (postId.HasValue)
             {
@@ -93,5 +93,13 @@ public class TagController : ControllerBase
         _dbContext.SaveChanges();
 
         return NoContent();
+    }
+
+    [HttpPost]
+    public IActionResult Post(Tag tag)
+    {
+        _dbContext.Tags.Add(tag);
+        _dbContext.SaveChanges();
+        return CreatedAtAction("Get", new { id = tag.Id }, tag);
     }
 }
