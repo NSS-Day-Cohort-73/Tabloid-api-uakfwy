@@ -11,7 +11,6 @@ import { PostDetails } from "./posts/PostDetails";
 import { NewPost } from "./posts/NewPost";
 import { MyPosts } from "./posts/MyPosts";
 import { EditTag } from "./tags/EditTag";
-import { EditPost } from "./posts/EditPost";
 import ReactionsList from "./reactions/ReactionsList";
 
 export default function ApplicationViews({ loggedInUser, setLoggedInUser }) {
@@ -32,14 +31,6 @@ export default function ApplicationViews({ loggedInUser, setLoggedInUser }) {
             element={
               <AuthorizedRoute loggedInUser={loggedInUser}>
                 <PostDetails loggedInUser={loggedInUser} />
-              </AuthorizedRoute>
-            }
-          />
-          <Route
-            path=":id/edit"
-            element={
-              <AuthorizedRoute loggedInUser={loggedInUser}>
-                <EditPost />
               </AuthorizedRoute>
             }
           />
