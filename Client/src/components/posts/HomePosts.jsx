@@ -13,7 +13,7 @@ import "../../styles/posts.css";
 import { useNavigate } from "react-router-dom";
 import { getProfilesWithCount } from "../../managers/userProfileManager";
 
-export const AllPosts = ({ loggedInUser }) => {
+export const HomePosts = ({ loggedInUser }) => {
   const [posts, setPosts] = useState([]);
   const [newAuthors, setNewAuthors] = useState([]);
 

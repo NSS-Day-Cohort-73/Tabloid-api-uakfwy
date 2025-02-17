@@ -6,13 +6,12 @@ import UserProfileList from "./userprofiles/UserProfilesList";
 import UserProfileDetails from "./userprofiles/UserProfileDetails";
 import TagList from "./tags/TagList";
 import CategoryList from "./category/CategoryList";
-import { AllPosts } from "./posts/HomePosts";
+import { HomePosts } from "./posts/HomePosts";
 import { PostDetails } from "./posts/PostDetails";
 import { NewPost } from "./posts/NewPost";
 import { MyPosts } from "./posts/MyPosts";
 import { EditTag } from "./tags/EditTag";
 import ReactionsList from "./reactions/ReactionsList";
-import { SubscribedPosts } from "./posts/SubscribedPosts";
 import CreateTag from "./tags/CreateTag";
 
 export default function ApplicationViews({ loggedInUser, setLoggedInUser }) {
@@ -23,7 +22,7 @@ export default function ApplicationViews({ loggedInUser, setLoggedInUser }) {
           index
           element={
             <AuthorizedRoute loggedInUser={loggedInUser}>
-              <AllPosts loggedInUser={loggedInUser} />
+              <HomePosts loggedInUser={loggedInUser} />
             </AuthorizedRoute>
           }
         />
