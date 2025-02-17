@@ -165,4 +165,5 @@
   color: #db534b;
   font-weight: bold;
   text-shadow: 0 0 0.1rem white;
+  box-shadow: 0 0 0.5rem gray;
 }
