@@ -21,5 +21,11 @@ export const newPostTag = async (postTag) => {
 export const deletePostTag = async (postTag) => {
   const response = await fetch(apiString, {
     method: "DELETE",
+    headers: {
+      "Content-Type": "application/json",
+    },
   });
+  if (!response.ok) {
+    throw new Error(`HTTP Error! Status ${response.status}`);
+  }
 };

@@ -127,8 +127,7 @@ export const PostDetails = ({ loggedInUser }) => {
       postId: id,
       tagId: tagId,
     };
-    if (postTags.some((pt) => pt.Id === tagId)) {
-      //this logic is incorrect. Isnt deleting the relationship
+    if (postTags.some((pt) => pt.id === tagId)) {
       deletePostTag(postTagObj).then(() => {
         getTags(id).then(setPostTags);
       });
