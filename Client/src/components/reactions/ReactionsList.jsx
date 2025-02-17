@@ -29,10 +29,6 @@ export default function ReactionsList() {
       return;
     }
 
-    if (trimmedIcon.length > 1) {
-      window.alert("An Icon can only be 1 character long");
-    }
-
     const reactionToSend = {
       name: trimmedReaction,
       icon: trimmedIcon,
