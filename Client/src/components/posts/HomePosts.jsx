@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { getAllPosts } from "../../managers/postManager";
+import { postsFromSubscription } from "../../managers/postManager";
 import {
   Card,
   CardBody,
@@ -11,25 +11,36 @@ import {
 } from "reactstrap";
 import "../../styles/posts.css";
 import { useNavigate } from "react-router-dom";
+import { getProfilesWithCount } from "../../managers/userProfileManager";
 
-export const AllPosts = () => {
+export const AllPosts = ({ loggedInUser }) => {
   const [posts, setPosts] = useState([]);
+  const [newAuthors, setNewAuthors] = useState([]);
 
   const navigate = useNavigate();
 
   useState(() => {
-    getAllPosts().then(setPosts);
-  }, []);
+    postsFromSubscription(loggedInUser.id).then(setPosts);
+    getProfilesWithCount(5).then(setNewAuthors);
+  }, [loggedInUser]);
+
   return (
     <div className="container">
       <div className="header mt-4">
-        <h2 className="mb-5">Latest Posts</h2>
+        <Row className="d-flex">
+          <Col className="d-flex justify-content-start">
+            <h2 className="mb-5">Latest Posts</h2>
+          </Col>
+          <Col className="d-flex justify-content-end">
+            <h2>New Authors</h2>
+          </Col>
+        </Row>
       </div>
       <Row>
         <Col md={10}>
           <div id="postsContainer">
             <Row>
-              <Col>
+              <Col className="latestPost-container">
                 <div className="latestPost">
                   <Card
                     className="postCard"
@@ -88,7 +99,7 @@ export const AllPosts = () => {
                   {posts.slice(1).map((p) => (
                     <Card
                       key={p.id}
-                      className="postCard-small"
+                      className="postCard-small mb-5"
                       onClick={() => navigate(`/posts/${p.id}`)}
                     >
                       <Row>
@@ -159,9 +170,7 @@ export const AllPosts = () => {
         </Col>
         <Col md={2}>
           <div id="newAuthorsContainer">
-            <div id="newAuthorsHeader">
-              <h4>New Authors</h4>
-            </div>
+            <div id="newAuthorsHeader"></div>
           </div>
         </Col>
       </Row>

@@ -20,9 +20,20 @@ public class UserProfileController : ControllerBase
 
     [HttpGet]
     [Authorize]
-    public IActionResult Get()
+    public IActionResult Get([FromQuery] int? authorCount)
     {
-        return Ok(_dbContext.UserProfiles.ToList());
+        IQueryable<UserProfile> userProfiles = _dbContext.UserProfiles;
+
+        if (authorCount.HasValue)
+        {
+            userProfiles = userProfiles
+            .Where(up => _dbContext.Posts
+                .Any(p => p.UserProfileId == up.Id))
+            .OrderByDescending(up => up.CreateDateTime)
+            .Take(authorCount.Value);
+        }
+
+        return Ok(userProfiles);
     }
 
     [HttpGet("withroles")]

@@ -6,7 +6,7 @@ import UserProfileList from "./userprofiles/UserProfilesList";
 import UserProfileDetails from "./userprofiles/UserProfileDetails";
 import TagList from "./tags/TagList";
 import CategoryList from "./category/CategoryList";
-import { AllPosts } from "./posts/AllPosts";
+import { AllPosts } from "./posts/HomePosts";
 import { PostDetails } from "./posts/PostDetails";
 import { NewPost } from "./posts/NewPost";
 import { MyPosts } from "./posts/MyPosts";
@@ -23,7 +23,7 @@ export default function ApplicationViews({ loggedInUser, setLoggedInUser }) {
           index
           element={
             <AuthorizedRoute loggedInUser={loggedInUser}>
-              <AllPosts />
+              <AllPosts loggedInUser={loggedInUser} />
             </AuthorizedRoute>
           }
         />
@@ -55,16 +55,6 @@ export default function ApplicationViews({ loggedInUser, setLoggedInUser }) {
           />
         </Route>
 
-        <Route path="/subscribed">
-          <Route
-            index
-            element={
-              <AuthorizedRoute loggedInUser={loggedInUser}>
-                <SubscribedPosts loggedInUser={loggedInUser} />
-              </AuthorizedRoute>
-            }
-          />
-        </Route>
         <Route path="/userprofiles">
           <Route
             index
