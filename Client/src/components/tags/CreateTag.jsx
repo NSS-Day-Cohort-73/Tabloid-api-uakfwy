@@ -9,14 +9,12 @@ export default function CreateTag() {
     const handleChange = (e) => {
         let value = e.target.value;
     
-        // Always ensure the first character is '#'
         if (!value.startsWith('#')) {
             value = '#' + value.replace(/^#/, '');
         }
     
         setTagName(value);
     };
-    
     
     const handleSave = (e) => {
         e.preventDefault();

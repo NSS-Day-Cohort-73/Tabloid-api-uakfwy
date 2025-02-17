@@ -102,4 +102,19 @@ public class TagController : ControllerBase
         _dbContext.SaveChanges();
         return CreatedAtAction("Get", new { id = tag.Id }, tag);
     }
+
+    [HttpDelete("{id}")]
+    
+    public IActionResult Delete(int id)
+    {
+        var tag = _dbContext.Tags.SingleOrDefault(t => t.Id == id);
+        if (tag == null)
+        {
+            return NotFound();
+        }
+
+        _dbContext.Tags.Remove(tag);
+        _dbContext.SaveChanges();
+        return NoContent();
+    }
 }
