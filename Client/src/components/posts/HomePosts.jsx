@@ -17,7 +17,7 @@ export const HomePosts = ({ loggedInUser }) => {
   const [posts, setPosts] = useState([]);
   const [newAuthors, setNewAuthors] = useState([]);
 
-  const navigate = useNavigate();
+  const navigate = useNavigate(); //Need to add navigation to all posts if not subscribed to anyone
 
   useState(() => {
     postsFromSubscription(loggedInUser.id).then(setPosts);
