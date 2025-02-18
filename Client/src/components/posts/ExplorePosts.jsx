@@ -20,7 +20,7 @@ export const ExplorePosts = () => {
   }, []);
   return (
     <div className="container">
-      <Row>
+      <Row className="d-flex justify-content-around">
         <Col>
           <h4>Search by Tag</h4>
           {tags.map((t) => (
@@ -57,6 +57,14 @@ export const ExplorePosts = () => {
                     <CardSubtitle tag="h6">
                       {p.category?.categoryName}
                     </CardSubtitle>
+                    <CardText>{`${p.body.slice(0, 100)}...`}</CardText>
+                  </Col>
+                  <Col>
+                    <CardText className="text-muted">
+                      {" "}
+                      {`Published On: ${p.publishDate?.split("T")[0]}`}
+                    </CardText>
+                    <CardText className="text-muted">{`Read Time: `}</CardText>
                   </Col>
                 </Row>
               </CardBody>
