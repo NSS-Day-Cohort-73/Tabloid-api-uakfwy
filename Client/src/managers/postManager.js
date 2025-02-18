@@ -99,3 +99,38 @@ export const postsFromSubscription = async (userId) => {
   }
   return response.json();
 };
+
+export const getAllPostsWithApprovalStatus = async () => {
+  try {
+    const response = await fetch(`${apiString}/allApprovalStatuses`);
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! Status: ${response.status}`);
+    }
+
+    return response.json();
+  } catch (error) {
+    console.error("Error fetching posts with approval status:", error);
+    return null;
+  }
+};
+
+export const togglePostApproval = async (id) => {
+  try {
+    const response = await fetch(`${apiString}/${id}/approval`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! Status: ${response.status}`);
+    }
+
+    return await response.json();
+  } catch (error) {
+    console.error("Error toggling post approval:", error);
+    return null;
+  }
+};

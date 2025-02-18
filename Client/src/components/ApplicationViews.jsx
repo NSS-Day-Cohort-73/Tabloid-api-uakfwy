@@ -13,6 +13,7 @@ import { MyPosts } from "./posts/MyPosts";
 import { EditTag } from "./tags/EditTag";
 import ReactionsList from "./reactions/ReactionsList";
 import CreateTag from "./tags/CreateTag";
+import ManagePosts from "./posts/ManagePosts";
 import { ExplorePosts } from "./posts/ExplorePosts";
 
 export default function ApplicationViews({ loggedInUser, setLoggedInUser }) {
@@ -58,6 +59,14 @@ export default function ApplicationViews({ loggedInUser, setLoggedInUser }) {
             element={
               <AuthorizedRoute loggedInUser={loggedInUser}>
                 <MyPosts loggedInUser={loggedInUser} />
+              </AuthorizedRoute>
+            }
+          />
+          <Route
+            path="manage"
+            element={
+              <AuthorizedRoute loggedInUser={loggedInUser}>
+                <ManagePosts />
               </AuthorizedRoute>
             }
           />
