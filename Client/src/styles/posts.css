@@ -209,3 +209,17 @@
   text-decoration: underline;
   text-shadow: 0 0 0.1rem grey;
 }
+
+.post-image {
+  max-height: 15rem;
+}
+
+.userPosts-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4rem;
+}
+
+.postCard-hover:hover {
+  cursor: pointer;
+}

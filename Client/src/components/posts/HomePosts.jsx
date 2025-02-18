@@ -186,7 +186,7 @@ export const HomePosts = ({ loggedInUser }) => {
                               <img
                                 alt={`Image for the post ${p.title}`}
                                 src={p.imageUrl}
-                                className="img-fluid"
+                                className="img-fluid "
                               />
                             </Col>
                           )}
@@ -201,7 +201,11 @@ export const HomePosts = ({ loggedInUser }) => {
           <Col md={3}>
             <div id="newAuthorsContainer">
               {newAuthors.map((a) => (
-                <Card key={a.id} className="mb-3">
+                <Card
+                  key={a.id}
+                  className="mb-3 postCard-hover"
+                  onClick={() => navigate(`/posts/user/${a.id}`)}
+                >
                   <CardBody>
                     <Row className="d-flex">
                       <Col className="d-flex align-items-center">
