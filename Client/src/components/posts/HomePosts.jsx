@@ -86,8 +86,13 @@ export const HomePosts = ({ loggedInUser }) => {
                           <Col>
                             <CardSubtitle
                               tag="h6"
-                              className="text-muted mb-4"
-                              onClick={() => navigate()}
+                              className="text-muted mb-4 author-name"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                navigate(
+                                  `/posts/user/${posts[0].userProfile?.id}`
+                                );
+                              }}
                             >{`Author: ${posts[0]?.userProfile?.userName}`}</CardSubtitle>
                             <CardSubtitle tag="h6" className="text-muted mb-4">
                               {`Published: ${
@@ -139,7 +144,13 @@ export const HomePosts = ({ loggedInUser }) => {
                                 <Col>
                                   <CardSubtitle
                                     tag="h6"
-                                    className="mb-2 text-muted"
+                                    className="mb-2 text-muted author-name"
+                                    onClick={(e) => {
+                                      e.stopPropagation();
+                                      navigate(
+                                        `/posts/user/${p.userProfile?.id}`
+                                      );
+                                    }}
                                   >{`Author: ${p.userProfile?.userName}`}</CardSubtitle>
                                 </Col>
                               </Row>

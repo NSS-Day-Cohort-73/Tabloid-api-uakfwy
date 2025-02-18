@@ -80,6 +80,7 @@ public class PostController : ControllerBase
                 LastName = p.UserProfile.LastName,
                 UserName = p.UserProfile.IdentityUser.UserName,
                 Email = p.UserProfile.IdentityUser.Email,
+                ImageLocation = p.UserProfile.ImageLocation
             },
             Title = p.Title,
             SubTitle = p.SubTitle,
