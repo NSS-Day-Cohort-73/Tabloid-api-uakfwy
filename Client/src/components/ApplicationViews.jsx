@@ -93,7 +93,7 @@ export default function ApplicationViews({ loggedInUser, setLoggedInUser }) {
             path=":id"
             element={
               <AuthorizedRoute loggedInUser={loggedInUser} roles={["Admin"]}>
-                <UserProfileDetails />
+                <UserProfileDetails loggedInUser={loggedInUser} />
               </AuthorizedRoute>
             }
           />

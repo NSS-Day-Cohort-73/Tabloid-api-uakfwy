@@ -1,8 +1,9 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { getProfile } from "../../managers/userProfileManager";
+import { Button } from "reactstrap";
 
-export default function UserProfileDetails() {
+export default function UserProfileDetails({ loggedInUser }) {
   const [userProfile, setUserProfile] = useState();
 
   const { id } = useParams();
@@ -10,6 +11,19 @@ export default function UserProfileDetails() {
   useEffect(() => {
     getProfile(id).then(setUserProfile);
   }, [id]);
+
+  const renderPromoteDemoteButton = () => {
+    if (
+      loggedInUser.id !== parseInt(id) &&
+      loggedInUser.roles?.includes("Admin")
+    ) {
+      if (userProfile.roles?.includes("Admin")) {
+        return <Button>Demote</Button>;
+      } else {
+        return <Button>Promote</Button>;
+      }
+    }
+  };
 
   if (!userProfile) {
     return null;
@@ -60,6 +74,7 @@ export default function UserProfileDetails() {
                 </span>
               </p>
             </div>
+            {renderPromoteDemoteButton()}
           </div>
         </div>
       </div>
