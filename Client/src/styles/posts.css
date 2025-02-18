@@ -39,6 +39,13 @@
 .my-post-delete-img {
   margin-left: 2.8rem;
 }
+.my-post-delete-manage {
+  width: 40%;
+}
+.my-post-delete-img-manage {
+  width: 80%;
+  margin-left: 2rem;
+}
 
 .edit-saveChanges,
 .edit-cancel {
