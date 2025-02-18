@@ -62,7 +62,7 @@ public class PostController : ControllerBase
                 return NotFound("That tag doesn't exist.");
             }
 
-            query = query.Where(p => p.PostTags.Any(pt => pt.Id == tagId));
+            query = query.Where(p => p.PostTags.Any(pt => pt.TagId == tagId));
         }
         
 

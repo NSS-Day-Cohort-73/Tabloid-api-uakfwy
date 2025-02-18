@@ -13,6 +13,7 @@ import { MyPosts } from "./posts/MyPosts";
 import { EditTag } from "./tags/EditTag";
 import ReactionsList from "./reactions/ReactionsList";
 import CreateTag from "./tags/CreateTag";
+import { ExplorePosts } from "./posts/ExplorePosts";
 
 export default function ApplicationViews({ loggedInUser, setLoggedInUser }) {
   return (
@@ -27,6 +28,14 @@ export default function ApplicationViews({ loggedInUser, setLoggedInUser }) {
           }
         />
         <Route path="/posts">
+          <Route
+            index
+            element={
+              <AuthorizedRoute loggedInUser={loggedInUser}>
+                <ExplorePosts />
+              </AuthorizedRoute>
+            }
+          />
           <Route
             path=":id"
             element={
