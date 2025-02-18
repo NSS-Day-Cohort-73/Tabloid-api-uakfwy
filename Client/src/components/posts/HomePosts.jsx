@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { postsFromSubscription } from "../../managers/postManager";
 import {
   Button,
@@ -20,7 +20,7 @@ export const HomePosts = ({ loggedInUser }) => {
 
   const navigate = useNavigate(); //Need to add navigation to all posts if not subscribed to anyone
 
-  useState(() => {
+  useEffect(() => {
     postsFromSubscription(loggedInUser.id).then(setPosts);
     getProfilesWithCount(5).then(setNewAuthors);
   }, [loggedInUser]);
