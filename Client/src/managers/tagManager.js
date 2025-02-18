@@ -22,21 +22,46 @@ export const getTags = async (postId = null) => {
 
 export const getTagById = (id) => {
   return fetch(`${apiUrl}/${id}`)
-      .then((res) => {
-          if (!res.ok) {
-              throw new Error(`HTTP error! Status: ${res.status}`);
-          }
-          return res.json();
-      });
+    .then((res) => {
+      if (!res.ok) {
+        throw new Error(`HTTP error! Status: ${res.status}`);
+      }
+      return res.json();
+    });
 };
 
 export const updateTag = (tag) => {
   return fetch(`${apiUrl}/${tag.id}`, {
-      method: "PUT",
-      headers: {
-          "Content-Type": "application/json",
-      },
-      body: JSON.stringify(tag),
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(tag),
+  })
+    .then((res) => {
+      if (!res.ok) {
+        throw new Error(`HTTP error! Status: ${res.status}`);
+      }
+    });
+};
+
+export const addTag = (tag) => {
+  return fetch(`${apiUrl}`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(tag)
+  }).then((res) => {
+      if (!res.ok) {
+        throw new Error(`HTTP error! Status: ${res.status}`);
+      }
+  })
+};
+
+export const deleteTag = (id) => {
+  return fetch(`${apiUrl}/${id}`, {
+      method: "DELETE"
   })
   .then((res) => {
       if (!res.ok) {

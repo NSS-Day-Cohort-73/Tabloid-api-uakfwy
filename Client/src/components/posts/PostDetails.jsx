@@ -2,7 +2,17 @@ import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { getPostById } from "../../managers/postManager";
 import "../../styles/posts.css";
-import { Badge, Col, Row } from "reactstrap";
+import {
+  Badge,
+  Button,
+  Card,
+  CardBody,
+  Col,
+  Modal,
+  ModalBody,
+  ModalHeader,
+  Row,
+} from "reactstrap";
 import {
   getAllReactions,
   newReaction,
@@ -15,22 +25,25 @@ import {
   deleteSubscription,
   getSubscriptionStatus,
 } from "../../managers/subscriptionManager";
-import style from "../../../node_modules/dom-helpers/esm/css";
+import { deletePostTag, newPostTag } from "../../managers/postTagManager";
 
 export const PostDetails = ({ loggedInUser }) => {
   const [post, setPost] = useState({});
   const [reactions, setReactions] = useState([]);
   const [loggedInUserReactions, setLoggedInUserReactions] = useState([]);
   const [postTags, setPostTags] = useState([]);
-
+  const [allTags, setAllTags] = useState([]);
+  const [modal, setModal] = useState(false);
   const [subscriptionStatus, setSubscriptionStatus] = useState(false);
 
   const { id } = useParams();
+  const toggle = () => setModal(!modal);
 
   useEffect(() => {
     getPostById(id).then(setPost);
     getAllReactions().then(setReactions);
     getTags(id).then(setPostTags);
+    getTags().then(setAllTags);
   }, [id]);
 
   useEffect(() => {
@@ -101,10 +114,26 @@ export const PostDetails = ({ loggedInUser }) => {
         );
       });
     } else {
-      deleteSubscription(post.userProfileId).then(() => {
+      deleteSubscription(loggedInUser.id).then(() => {
         getSubscriptionStatus(loggedInUser.id, post.userProfileId).then(
           (response) => setSubscriptionStatus(!!response)
         );
+      });
+    }
+  };
+
+  const handleTagChange = (tagId) => {
+    const postTagObj = {
+      postId: parseInt(id),
+      tagId: tagId,
+    };
+    if (postTags.some((pt) => pt.id === tagId)) {
+      deletePostTag(postTagObj).then(() => {
+        getTags(id).then(setPostTags);
+      });
+    } else {
+      newPostTag(postTagObj).then(() => {
+        getTags(id).then(setPostTags);
       });
     }
   };
@@ -171,7 +200,13 @@ export const PostDetails = ({ loggedInUser }) => {
           ))}
         </div>
         {loggedInUser.id === post.userProfileId ? (
-          ""
+          <Button
+            className="btn my-post-edit"
+            style={{ width: "15%" }}
+            onClick={toggle}
+          >
+            Manage Tags
+          </Button>
         ) : (
           <button
             onClick={handleSubscribeBtn}
@@ -194,6 +229,26 @@ export const PostDetails = ({ loggedInUser }) => {
         )}
       </div>
       <CommentList loggedInUser={loggedInUser} postId={id} />
+      <Modal isOpen={modal} toggle={toggle}>
+        <ModalHeader
+          toggle={toggle}
+        >{`Manage tags for ${post.title}`}</ModalHeader>
+        <ModalBody>
+          {allTags.map((t) => (
+            <Card
+              key={t.id}
+              className={`mb-3 text-center tag-card ${
+                postTags.some((pt) => pt.id === t.id)
+                  ? "hasTag"
+                  : "doesntHaveTag"
+              }`}
+              onClick={() => handleTagChange(t.id)}
+            >
+              <CardBody>{t.tagName}</CardBody>
+            </Card>
+          ))}
+        </ModalBody>
+      </Modal>
     </div>
   );
 };

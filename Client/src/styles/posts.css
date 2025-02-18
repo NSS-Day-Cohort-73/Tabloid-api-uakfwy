@@ -2,6 +2,10 @@
   width: 50%;
   margin: 0 auto;
 }
+.container .header {
+  width: 95%;
+  margin: 0 auto;
+}
 
 .my-posts-card {
   cursor: pointer;
@@ -35,6 +39,13 @@
 .my-post-delete-img {
   margin-left: 2.8rem;
 }
+.my-post-delete-manage {
+  width: 40%;
+}
+.my-post-delete-img-manage {
+  width: 80%;
+  margin-left: 2rem;
+}
 
 .edit-saveChanges,
 .edit-cancel {
@@ -47,6 +58,22 @@
   height: 20%;
   box-shadow: 0 0 0.1rem gray;
 }
+
+.latestPost {
+  margin-left: 8rem;
+}
+.latestPost-container {
+  width: 60%;
+}
+.latestPost .postCard {
+  width: 70%;
+}
+
+.postCard-small {
+  width: 100%;
+  cursor: pointer;
+}
+
 .postCard-small-image {
   height: 20%;
 }
@@ -150,4 +177,29 @@
 
 .post-input {
   width: 85%;
+}
+
+.tag-card {
+  box-shadow: 0 0 0.1rem gray;
+  cursor: pointer;
+}
+
+.tag-card:hover {
+  box-shadow: 0 0 0.3rem gray;
+}
+.hasTag {
+  background-color: #9ed0e7;
+  color: #db534b;
+  font-weight: bold;
+  text-shadow: 0 0 0.1rem white;
+  box-shadow: 0 0 0.5rem gray;
+}
+
+.explore-postCard {
+  height: max-content;
+  width: 50rem;
+}
+.explore-postCard-img {
+  width: 50rem;
+  height: 15rem;
 }

@@ -77,9 +77,19 @@ export const MyPosts = ({ loggedInUser }) => {
   };
 
   useEffect(() => {
-    getAllPosts((null, loggedInUser.id, null)).then(setUserPosts);
+    getAllPosts(null, loggedInUser.id, null).then(setUserPosts);
     getAllCategories().then(setCategories);
   }, [loggedInUser]);
+
+  const handleReadTimeCalc = (body) => {
+    if (!body) return "0 minutes";
+
+    const wordCount = body.split(/\s+/).length;
+
+    const readTimeMinutes = Math.ceil(wordCount / 265);
+
+    return readTimeMinutes === 1 ? "1 minute" : `${readTimeMinutes} minutes`;
+  };
 
   return (
     <div className="container">
@@ -124,7 +134,9 @@ export const MyPosts = ({ loggedInUser }) => {
                       <CardText className="text-muted">{`Published On: ${
                         p.publishDate.split("T")[0]
                       }`}</CardText>
-                      <CardText className="text-muted">{`Read Time:`}</CardText>
+                      <CardText className="text-muted">{`Read Time: ${handleReadTimeCalc(
+                        p?.body
+                      )}`}</CardText>
                     </Col>
                   </Row>
                   <CardText>{`${p.body.slice(0, 200)}...`}</CardText>

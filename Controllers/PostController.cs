@@ -24,8 +24,12 @@ public class PostController : ControllerBase
     public IActionResult GetAll(
         [FromQuery] int? count,
         [FromQuery] int? userId,
+<<<<<<< HEAD
         [FromQuery] int? tagId,
         [FromQuery] int? categoryId
+=======
+        [FromQuery] int? tagId
+>>>>>>> ee92d9d3170e30126f1c590e832794e8545ed926
     )
     {
         try
@@ -66,8 +70,9 @@ public class PostController : ControllerBase
                     return NotFound("That tag doesn't exist.");
                 }
 
-                query = query.Where(p => p.PostTags.Any(pt => pt.Id == tagId));
+                query = query.Where(p => p.PostTags.Any(pt => pt.TagId == tagId));
             }
+            
             if (categoryId.HasValue)
             {
                 bool categoryExists = _dbContext.Categories.Any(c => c.Id == categoryId);
@@ -243,6 +248,79 @@ public class PostController : ControllerBase
         }
     }
 
+    //Gets all posts from all authors that a user is subscribed too
+    [HttpGet("{userId}/subscribed")]
+    [Authorize]
+    public IActionResult GetSubscribed(int userId)
+    {
+        try
+        {
+            if (!_dbContext.UserProfiles.Any(up => up.Id == userId))
+            {
+                return BadRequest("That user does not exist");
+            }
+            return Ok(
+                _dbContext
+                    .Posts.Include(p => p.UserProfile)
+                    .ThenInclude(up => up.IdentityUser)
+                    .Where(p =>
+                        p.Approved
+                        && _dbContext.Subscriptions.Any(s =>
+                            s.SubscriberId == userId && s.AuthorId == p.UserProfileId
+                        )
+                    )
+                    .Select(p => new PostDTO
+                    {
+                        Id = p.Id,
+                        UserProfileId = p.UserProfileId,
+                        Title = p.Title,
+                        SubTitle = p.SubTitle,
+                        Body = p.Body,
+                        CategoryId = p.CategoryId != null ? p.CategoryId : null,
+                        PublishDate = p.PublishDate,
+                        ImageUrl = p.ImageUrl != null ? p.ImageUrl : null,
+                        UserProfile = new UserProfileDTO
+                        {
+                            Id = p.UserProfile.Id,
+                            FirstName = p.UserProfile.FirstName,
+                            LastName = p.UserProfile.LastName,
+                            UserName = p.UserProfile.IdentityUser.UserName,
+                            ImageLocation = p.UserProfile.ImageLocation,
+                        },
+                        Category =
+                            p.CategoryId != null
+                                ? new CategoryDTO
+                                {
+                                    Id = p.Category.Id,
+                                    CategoryName = p.Category.CategoryName,
+                                }
+                                : null,
+                        PostTags =
+                            p.PostTags != null
+                                ? p
+                                    .PostTags.Select(pt => new PostTagDTO
+                                    {
+                                        Id = pt.Id,
+                                        PostId = pt.PostId,
+                                        TagId = pt.TagId,
+                                        Tag = new TagDTO
+                                        {
+                                            Id = pt.Tag.Id,
+                                            TagName = pt.Tag.TagName,
+                                        },
+                                    })
+                                    .ToList()
+                                : null,
+                    })
+                    .ToList()
+            );
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, $"An error occurred processing your request {ex.Message}");
+        }
+    }
+
     [HttpPost]
     [Authorize]
     public IActionResult NewPost([FromBody] Post post, [FromQuery, Required] int userId)
@@ -312,30 +390,122 @@ public class PostController : ControllerBase
 
     [HttpPut("{id}")]
     [Authorize]
-    public IActionResult UpdatePost(int id, PostDTO post) 
+    public IActionResult UpdatePost(int id, PostDTO post)
     {
         try
         {
-        Post postToEdit = _dbContext
-        .Posts
-        .SingleOrDefault(p => p.Id == id);
+            Post postToEdit = _dbContext.Posts.SingleOrDefault(p => p.Id == id);
 
-        if (postToEdit == null)
-        {
-            return NotFound("That post does not exist");
-        }
+            if (postToEdit == null)
+            {
+                return NotFound("That post does not exist");
+            }
 
-        postToEdit.Title = post.Title;
-        postToEdit.SubTitle = post.SubTitle;
-        postToEdit.CategoryId = post.CategoryId;
-        postToEdit.Body = post.Body;
+            postToEdit.Title = post.Title;
+            postToEdit.SubTitle = post.SubTitle;
+            postToEdit.CategoryId = post.CategoryId;
+            postToEdit.Body = post.Body;
 
-        _dbContext.SaveChanges();
-        return NoContent();
+            _dbContext.SaveChanges();
+            return NoContent();
         }
         catch (Exception ex)
         {
             return StatusCode(500, $"There was an error processing your request {ex.Message}");
+        }
+    }
+
+    //get all approval statuses ordered by unapproved first
+    [HttpGet("allApprovalStatuses")]
+    [Authorize]
+    public IActionResult GetAllWithApprovalStatus()
+    {
+        try
+        {
+            var query = _dbContext
+                .Posts.Include(p => p.UserProfile)
+                .ThenInclude(u => u.IdentityUser)
+                .Include(p => p.Category)
+                .Include(p => p.PostTags)
+                .ThenInclude(pt => pt.Tag)
+                .Where(p => p.PublishDate <= DateTime.Now)
+                .OrderBy(p => p.Approved)
+                .ThenByDescending(p => p.PublishDate);
+
+            return Ok(
+                query.Select(p => new PostDTO
+                {
+                    Id = p.Id,
+                    UserProfileId = p.UserProfileId,
+                    UserProfile = new UserProfileDTO
+                    {
+                        Id = p.UserProfileId,
+                        FirstName = p.UserProfile.FirstName,
+                        LastName = p.UserProfile.LastName,
+                        UserName = p.UserProfile.IdentityUser.UserName,
+                        Email = p.UserProfile.IdentityUser.Email,
+                    },
+                    Title = p.Title,
+                    SubTitle = p.SubTitle,
+                    Body = p.Body,
+                    CategoryId = p.CategoryId != null ? p.CategoryId : null,
+                    Category =
+                        p.CategoryId != null
+                            ? new CategoryDTO
+                            {
+                                Id = p.Category.Id,
+                                CategoryName = p.Category.CategoryName,
+                            }
+                            : null,
+                    PublishDate = p.PublishDate,
+                    PostTags = p
+                        .PostTags.Select(pt => new PostTagDTO
+                        {
+                            Id = pt.Id,
+                            PostId = pt.PostId,
+                            TagId = pt.TagId,
+                            Tag = new TagDTO { Id = pt.Tag.Id, TagName = pt.Tag.TagName },
+                        })
+                        .ToList(),
+                    ImageUrl = p.ImageUrl,
+                    Approved = p.Approved,
+                })
+            );
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(
+                500,
+                $"An error occurred while processing your request: {ex.Message}"
+            );
+        }
+    }
+
+    [HttpPut("{id}/approval")]
+    [Authorize]
+    public IActionResult ToggleApproval(int id)
+    {
+        try
+        {
+            var post = _dbContext.Posts.FirstOrDefault(p => p.Id == id);
+
+            if (post == null)
+            {
+                return NotFound($"Post with ID {id} not found.");
+            }
+
+            post.Approved = !post.Approved;
+
+            _dbContext.SaveChanges();
+
+            return Ok(post);
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(
+                500,
+                $"An error occurred while processing your request: {ex.Message}"
+            );
         }
     }
 }

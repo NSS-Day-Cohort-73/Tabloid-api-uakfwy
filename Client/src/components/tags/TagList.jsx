@@ -1,15 +1,29 @@
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Button, Table } from "reactstrap";
-import { getTags } from "../../managers/tagManager";
+import { deleteTag, getTags } from "../../managers/tagManager";
 
 
 export default function TagList() {
   const [tags, setTags] = useState([]);
+  const navigate = useNavigate();
 
   useEffect(() => {
     getTags().then(setTags);
   }, []);
+
+  const handleDelete = (tagId) => {
+    if (window.confirm("Are you sure you want to delete this tag?")) {
+        deleteTag(tagId)
+            .then(() => {
+                getTags().then(setTags);
+            })
+            .catch(error => {
+                console.error('Error deleting tag:', error);
+                alert('Failed to delete tag. Please try again.');
+            });
+    }
+};
 
   return (
     <div className="container mt-5">
@@ -36,6 +50,13 @@ export default function TagList() {
                     Edit
                   </Button>
                 </Link>
+                <Button
+                  color="danger"
+                  size="sm"
+                  onClick={() => handleDelete(tag.id)}
+                >
+                  Delete
+                </Button>  
               </td>
             </tr>
           ))}

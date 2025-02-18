@@ -6,12 +6,15 @@ import UserProfileList from "./userprofiles/UserProfilesList";
 import UserProfileDetails from "./userprofiles/UserProfileDetails";
 import TagList from "./tags/TagList";
 import CategoryList from "./category/CategoryList";
-import { AllPosts } from "./posts/AllPosts";
+import { HomePosts } from "./posts/HomePosts";
 import { PostDetails } from "./posts/PostDetails";
 import { NewPost } from "./posts/NewPost";
 import { MyPosts } from "./posts/MyPosts";
 import { EditTag } from "./tags/EditTag";
-import { EditPost } from "./posts/EditPost";
+import ReactionsList from "./reactions/ReactionsList";
+import CreateTag from "./tags/CreateTag";
+import ManagePosts from "./posts/ManagePosts";
+import { ExplorePosts } from "./posts/ExplorePosts";
 
 export default function ApplicationViews({ loggedInUser, setLoggedInUser }) {
   return (
@@ -21,24 +24,24 @@ export default function ApplicationViews({ loggedInUser, setLoggedInUser }) {
           index
           element={
             <AuthorizedRoute loggedInUser={loggedInUser}>
-              <AllPosts />
+              <HomePosts loggedInUser={loggedInUser} />
             </AuthorizedRoute>
           }
         />
         <Route path="/posts">
           <Route
-            path=":id"
+            index
             element={
               <AuthorizedRoute loggedInUser={loggedInUser}>
-                <PostDetails loggedInUser={loggedInUser} />
+                <ExplorePosts />
               </AuthorizedRoute>
             }
           />
           <Route
-            path=":id/edit"
+            path=":id"
             element={
               <AuthorizedRoute loggedInUser={loggedInUser}>
-                <EditPost />
+                <PostDetails loggedInUser={loggedInUser} />
               </AuthorizedRoute>
             }
           />
@@ -59,7 +62,16 @@ export default function ApplicationViews({ loggedInUser, setLoggedInUser }) {
               </AuthorizedRoute>
             }
           />
+          <Route
+            path="manage"
+            element={
+              <AuthorizedRoute loggedInUser={loggedInUser}>
+                <ManagePosts />
+              </AuthorizedRoute>
+            }
+          />
         </Route>
+
         <Route path="/userprofiles">
           <Route
             index
@@ -78,6 +90,16 @@ export default function ApplicationViews({ loggedInUser, setLoggedInUser }) {
             }
           />
         </Route>
+        <Route path="/reactions">
+          <Route
+            index
+            element={
+              <AuthorizedRoute loggedInUser={loggedInUser} roles={["Admin"]}>
+                <ReactionsList />
+              </AuthorizedRoute>
+            }
+          />
+        </Route>
         <Route path="/tags">
           <Route
             index
@@ -92,6 +114,14 @@ export default function ApplicationViews({ loggedInUser, setLoggedInUser }) {
             element={
               <AuthorizedRoute loggedInUser={loggedInUser} roles={["Admin"]}>
                 <EditTag />
+              </AuthorizedRoute>
+            }
+          />
+          <Route
+            path="create"
+            element={
+              <AuthorizedRoute loggedInUser={loggedInUser} roles={["Admin"]}>
+                <CreateTag />
               </AuthorizedRoute>
             }
           />

@@ -34,18 +34,13 @@ export default function NavBar({ loggedInUser, setLoggedInUser }) {
                   </NavLink>
                 </NavItem>
                 <NavItem>
-                  <NavLink tag={RRNavLink} to="/explore">
+                  <NavLink tag={RRNavLink} to="/posts">
                     Explore
                   </NavLink>
                 </NavItem>
                 <NavItem>
                   <NavLink tag={RRNavLink} to="/posts/new">
                     New Post
-                  </NavLink>
-                </NavItem>
-                <NavItem>
-                  <NavLink tag={RRNavLink} to="/subscribed">
-                    Subscribed Posts
                   </NavLink>
                 </NavItem>
                 <NavItem>
@@ -68,6 +63,16 @@ export default function NavBar({ loggedInUser, setLoggedInUser }) {
                     <NavItem>
                       <NavLink tag={RRNavLink} to="/tags">
                         Tags
+                      </NavLink>
+                    </NavItem>
+                    <NavItem>
+                      <NavLink tag={RRNavLink} to="/reactions">
+                        Reactions
+                      </NavLink>
+                    </NavItem>
+                    <NavItem>
+                      <NavLink tag={RRNavLink} to="/posts/manage">
+                        Manage Posts
                       </NavLink>
                     </NavItem>
                   </>
