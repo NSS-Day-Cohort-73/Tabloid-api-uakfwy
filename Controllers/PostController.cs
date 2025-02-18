@@ -24,12 +24,8 @@ public class PostController : ControllerBase
     public IActionResult GetAll(
         [FromQuery] int? count,
         [FromQuery] int? userId,
-<<<<<<< HEAD
         [FromQuery] int? tagId,
         [FromQuery] int? categoryId
-=======
-        [FromQuery] int? tagId
->>>>>>> ee92d9d3170e30126f1c590e832794e8545ed926
     )
     {
         try
@@ -72,7 +68,7 @@ public class PostController : ControllerBase
 
                 query = query.Where(p => p.PostTags.Any(pt => pt.TagId == tagId));
             }
-            
+
             if (categoryId.HasValue)
             {
                 bool categoryExists = _dbContext.Categories.Any(c => c.Id == categoryId);
