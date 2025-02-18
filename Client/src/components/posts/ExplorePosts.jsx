@@ -1,5 +1,9 @@
 import { useEffect, useState } from "react";
-import { getAllPosts } from "../../managers/postManager";
+import {
+  getAllPosts,
+  getPostsByCategoryId,
+  getTagCatFilteredPosts,
+} from "../../managers/postManager";
 import { getTags } from "../../managers/tagManager";
 import {
   Card,
@@ -13,11 +17,13 @@ import {
 import { useNavigate } from "react-router-dom";
 import "../../styles/tags.css";
 import "../../styles/posts.css";
+import CategoryDropdownFilter from "../category/CategoryDropdownFilter";
 export const ExplorePosts = () => {
   const [allPosts, setAllPosts] = useState([]);
   const [filteredPosts, setFilteredPosts] = useState([]);
   const [tags, setTags] = useState([]);
   const [selectedTagId, setSelectedTagId] = useState(0);
+  const [selectedCategoryId, setSelectedCategoryId] = useState(0);
 
   const navigate = useNavigate();
 
@@ -37,17 +43,42 @@ export const ExplorePosts = () => {
     return readTimeMinutes === 1 ? "1 minute" : `${readTimeMinutes} minutes`;
   };
 
-  const handleTagSearch = (tagId) => {
-    getAllPosts(null, null, tagId).then((filteredResults) => {
-      setSelectedTagId(tagId);
-      setFilteredPosts(filteredResults);
-    });
-  };
+  useEffect(() => {
+    const fetchPosts = async () => {
+      let posts;
+
+      if (selectedCategoryId === 0 && selectedTagId === 0) {
+        posts = await getAllPosts();
+      } else if (selectedTagId > 0 && selectedCategoryId === 0) {
+        posts = await getAllPosts(null, null, selectedTagId);
+      } else if (selectedCategoryId > 0 && selectedTagId === 0) {
+        posts = await getPostsByCategoryId(selectedCategoryId);
+      } else {
+        posts = await getTagCatFilteredPosts(
+          null,
+          selectedTagId,
+          selectedCategoryId
+        );
+      }
+
+      setFilteredPosts(posts);
+    };
+
+    fetchPosts();
+  }, [selectedCategoryId, selectedTagId]);
 
   return (
     <div className="container mt-5">
       <div className="mb-5">
-        <>Search bars will go here</>
+        <>
+          {
+            <CategoryDropdownFilter
+              setPosts={setFilteredPosts}
+              setSelectedCategoryId={setSelectedCategoryId}
+              selectedCategoryId={selectedCategoryId}
+            />
+          }
+        </>
       </div>
       <Row className="explore-container">
         <Col className="explore-tags">
@@ -68,7 +99,7 @@ export const ExplorePosts = () => {
               className={`text-center mb-4 tag-choice ${
                 t.id === selectedTagId && "tagChosen"
               }`}
-              onClick={() => handleTagSearch(t.id)}
+              onClick={() => setSelectedTagId(t.id)}
             >
               <CardBody tag="h4">{t.tagName}</CardBody>
             </Card>
