@@ -77,7 +77,7 @@ export const MyPosts = ({ loggedInUser }) => {
   };
 
   useEffect(() => {
-    getAllPosts((null, loggedInUser.id, null)).then(setUserPosts);
+    getAllPosts(null, loggedInUser.id, null).then(setUserPosts);
     getAllCategories().then(setCategories);
   }, [loggedInUser]);
 

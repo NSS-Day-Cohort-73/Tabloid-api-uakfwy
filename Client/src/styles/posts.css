@@ -2,6 +2,10 @@
   width: 50%;
   margin: 0 auto;
 }
+.container .header {
+  width: 95%;
+  margin: 0 auto;
+}
 
 .my-posts-card {
   cursor: pointer;
@@ -47,6 +51,22 @@
   height: 20%;
   box-shadow: 0 0 0.1rem gray;
 }
+
+.latestPost {
+  margin-left: 8rem;
+}
+.latestPost-container {
+  width: 60%;
+}
+.latestPost .postCard {
+  width: 70%;
+}
+
+.postCard-small {
+  width: 100%;
+  cursor: pointer;
+}
+
 .postCard-small-image {
   height: 20%;
 }

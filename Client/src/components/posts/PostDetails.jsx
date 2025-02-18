@@ -114,7 +114,7 @@ export const PostDetails = ({ loggedInUser }) => {
         );
       });
     } else {
-      deleteSubscription(post.userProfileId).then(() => {
+      deleteSubscription(loggedInUser.id).then(() => {
         getSubscriptionStatus(loggedInUser.id, post.userProfileId).then(
           (response) => setSubscriptionStatus(!!response)
         );
