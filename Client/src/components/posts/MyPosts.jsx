@@ -81,6 +81,16 @@ export const MyPosts = ({ loggedInUser }) => {
     getAllCategories().then(setCategories);
   }, [loggedInUser]);
 
+  const handleReadTimeCalc = (body) => {
+    if (!body) return "0 minutes";
+
+    const wordCount = body.split(/\s+/).length;
+
+    const readTimeMinutes = Math.ceil(wordCount / 265);
+
+    return readTimeMinutes === 1 ? "1 minute" : `${readTimeMinutes} minutes`;
+  };
+
   return (
     <div className="container">
       <h2 className="text-center mt-5 mb-5">My Posts</h2>
@@ -124,7 +134,9 @@ export const MyPosts = ({ loggedInUser }) => {
                       <CardText className="text-muted">{`Published On: ${
                         p.publishDate.split("T")[0]
                       }`}</CardText>
-                      <CardText className="text-muted">{`Read Time:`}</CardText>
+                      <CardText className="text-muted">{`Read Time: ${handleReadTimeCalc(
+                        p?.body
+                      )}`}</CardText>
                     </Col>
                   </Row>
                   <CardText>{`${p.body.slice(0, 200)}...`}</CardText>

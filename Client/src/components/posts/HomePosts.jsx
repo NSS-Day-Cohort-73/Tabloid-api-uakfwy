@@ -20,6 +20,16 @@ export const HomePosts = ({ loggedInUser }) => {
 
   const navigate = useNavigate(); //Need to add navigation to all posts if not subscribed to anyone
 
+  const handleReadTimeCalc = (body) => {
+    if (!body) return "0 minutes";
+
+    const wordCount = body.split(/\s+/).length;
+
+    const readTimeMinutes = Math.ceil(wordCount / 265);
+
+    return readTimeMinutes === 1 ? "1 minute" : `${readTimeMinutes} minutes`;
+  };
+
   useState(() => {
     postsFromSubscription(loggedInUser.id).then(setPosts);
     getProfilesWithCount(5).then(setNewAuthors);
@@ -86,7 +96,9 @@ export const HomePosts = ({ loggedInUser }) => {
                             <CardSubtitle
                               tag="h6"
                               className="text-muted"
-                            >{`Read Time: `}</CardSubtitle>
+                            >{`Read Time: ${handleReadTimeCalc(
+                              posts[0]?.body
+                            )}`}</CardSubtitle>
                           </Col>
                         </Row>
                         <CardText>
@@ -145,7 +157,9 @@ export const HomePosts = ({ loggedInUser }) => {
                                     p.publishDate.split("T")[0]
                                   }`}</CardSubtitle>
                                 </Col>
-                                <Col>{`Read Time: `}</Col>
+                                <Col>{`Read Time: ${handleReadTimeCalc(
+                                  p?.body
+                                )}`}</Col>
                               </Row>
                               {!p.imageUrl && (
                                 <CardText className="mb-3">{`${p.body.slice(
