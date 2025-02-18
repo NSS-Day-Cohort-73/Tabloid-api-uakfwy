@@ -1,0 +1,23 @@
+.tagChosen {
+  background-color: #5bb8a6;
+  color: #db534b;
+  text-shadow: 0 0 0.1rem white;
+  box-shadow: 0 0 0.3rem gray;
+}
+.tag-choice {
+  cursor: pointer;
+  width: 20%;
+}
+
+.explore-posts {
+  margin-right: 2rem;
+  padding: 2rem;
+}
+
+.explore-tags {
+  margin-left: 4rem;
+  padding: 4rem;
+}
+.tag-choice:hover {
+  box-shadow: 0 0 0.3rem gray;
+}

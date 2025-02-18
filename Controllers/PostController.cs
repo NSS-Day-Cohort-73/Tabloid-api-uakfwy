@@ -40,7 +40,68 @@ public class PostController : ControllerBase
 
             if (count.HasValue)
             {
+<<<<<<< HEAD
                 if (count.Value <= 0)
+=======
+                return BadRequest("Count must be a positive integer");
+            }
+            query = query.Take(count.Value);
+        }
+
+        if (userId.HasValue)
+        {
+            bool userExists = _dbContext.UserProfiles.Any(u => u.Id == userId.Value);
+            if (!userExists)
+            {
+                return NotFound("User does not exist.");
+            }
+            query = query.Where(p => p.UserProfileId == userId);
+        }
+
+        if (tagId.HasValue)
+        {
+            bool tagExists = _dbContext.Tags.Any(t => t.Id == tagId);
+            if (!tagExists)
+            {
+                return NotFound("That tag doesn't exist.");
+            }
+
+            query = query.Where(p => p.PostTags.Any(pt => pt.TagId == tagId));
+        }
+        
+
+        query = query.OrderByDescending(p => p.PublishDate);
+
+        return Ok(query
+        .Select(p => new PostDTO
+        {
+            Id = p.Id,
+            UserProfileId = p.UserProfileId,
+            UserProfile = new UserProfileDTO
+            {
+                Id = p.UserProfileId,
+                FirstName = p.UserProfile.FirstName,
+                LastName = p.UserProfile.LastName,
+                UserName = p.UserProfile.IdentityUser.UserName,
+                Email = p.UserProfile.IdentityUser.Email,
+            },
+            Title = p.Title,
+            SubTitle = p.SubTitle,
+            Body = p.Body,
+            CategoryId = p.CategoryId != null ? p.CategoryId : null,
+            Category = p.CategoryId != null ? new CategoryDTO
+            {
+                Id = p.Category.Id,
+                CategoryName = p.Category.CategoryName
+            } : null,
+            PublishDate = p.PublishDate,
+            PostTags = p.PostTags.Select(pt => new PostTagDTO
+            {
+                Id = pt.Id,
+                PostId = pt.PostId,
+                TagId = pt.TagId,
+                Tag = new TagDTO
+>>>>>>> 772feb907ebb5c92b0f55a5b864ce101ab3b4fcd
                 {
                     return BadRequest("Count must be a positive integer");
                 }

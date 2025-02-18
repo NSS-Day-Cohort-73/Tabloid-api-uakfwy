@@ -34,7 +34,7 @@ export default function NavBar({ loggedInUser, setLoggedInUser }) {
                   </NavLink>
                 </NavItem>
                 <NavItem>
-                  <NavLink tag={RRNavLink} to="/explore">
+                  <NavLink tag={RRNavLink} to="/posts">
                     Explore
                   </NavLink>
                 </NavItem>

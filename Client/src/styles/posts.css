@@ -194,3 +194,12 @@
   text-shadow: 0 0 0.1rem white;
   box-shadow: 0 0 0.5rem gray;
 }
+
+.explore-postCard {
+  height: max-content;
+  width: 50rem;
+}
+.explore-postCard-img {
+  width: 50rem;
+  height: 15rem;
+}
