@@ -215,6 +215,66 @@ public class PostController : ControllerBase
 
     }
 
+//Gets all posts from all authors that a user is subscribed too
+    [HttpGet("{userId}/subscribed")]
+    [Authorize]
+    public IActionResult GetSubscribed(int userId)
+    {
+        try
+        {
+            if (!_dbContext.UserProfiles.Any(up => up.Id == userId))
+            {
+                return BadRequest("That user does not exist");
+            }
+            return Ok(_dbContext
+            .Posts
+            .Include(p => p.UserProfile)
+                .ThenInclude(up => up.IdentityUser)
+            .Where(p => p.Approved && _dbContext.Subscriptions
+                .Any(s => s.SubscriberId == userId && s.AuthorId == p.UserProfileId))
+            .Select(p => new PostDTO
+            {
+                Id = p.Id,
+                UserProfileId = p.UserProfileId,
+                Title = p.Title,
+                SubTitle = p.SubTitle,
+                Body = p.Body,
+                CategoryId = p.CategoryId != null ? p.CategoryId : null,
+                PublishDate = p.PublishDate,
+                ImageUrl = p.ImageUrl != null ? p.ImageUrl : null,
+                UserProfile = new UserProfileDTO
+                {
+                    Id = p.UserProfile.Id,
+                    FirstName = p.UserProfile.FirstName,
+                    LastName = p.UserProfile.LastName,
+                    UserName = p.UserProfile.IdentityUser.UserName,
+                    ImageLocation = p.UserProfile.ImageLocation
+                },
+                Category = p.CategoryId != null ? new CategoryDTO
+                {
+                    Id = p.Category.Id,
+                    CategoryName = p.Category.CategoryName
+                } : null,
+                PostTags = p.PostTags != null ? p.PostTags.Select(pt => new PostTagDTO
+                {
+                    Id = pt.Id,
+                    PostId = pt.PostId,
+                    TagId = pt.TagId,
+                    Tag = new TagDTO
+                    {
+                        Id = pt.Tag.Id,
+                        TagName = pt.Tag.TagName
+                    }
+                }).ToList() : null
+            }).ToList());
+        }
+        catch(Exception ex)
+        {
+            return StatusCode(500, $"An error occurred processing your request {ex.Message}");
+        }
+      
+    }
+    
     [HttpPost]
     [Authorize]
     public IActionResult NewPost([FromBody] Post post, [FromQuery, Required] int userId)

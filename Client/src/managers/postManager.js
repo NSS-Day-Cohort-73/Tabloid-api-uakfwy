@@ -88,3 +88,14 @@ export const updatePost = async (postObj) => {
     throw new Error(`HTTP Error! Status ${response.status}`);
   }
 };
+
+//Gets all posts from all authors that a user is subscribed too
+//Expects the Id of the logged in user
+export const postsFromSubscription = async (userId) => {
+  const response = await fetch(`${apiString}/${userId}/subscribed`);
+
+  if (!response.ok) {
+    throw new Error(`HTTP Error! Status${response.status}`);
+  }
+  return response.json();
+};
