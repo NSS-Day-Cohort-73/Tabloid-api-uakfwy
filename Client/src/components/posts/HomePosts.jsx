@@ -18,7 +18,7 @@ export const HomePosts = ({ loggedInUser }) => {
   const [posts, setPosts] = useState([]);
   const [newAuthors, setNewAuthors] = useState([]);
 
-  const navigate = useNavigate(); //Need to add navigation to all posts if not subscribed to anyone
+  const navigate = useNavigate();
 
   const handleReadTimeCalc = (body) => {
     if (!body) return "0 minutes";
@@ -86,7 +86,13 @@ export const HomePosts = ({ loggedInUser }) => {
                           <Col>
                             <CardSubtitle
                               tag="h6"
-                              className="text-muted mb-4"
+                              className="text-muted mb-4 author-name"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                navigate(
+                                  `/posts/user/${posts[0].userProfile?.id}`
+                                );
+                              }}
                             >{`Author: ${posts[0]?.userProfile?.userName}`}</CardSubtitle>
                             <CardSubtitle tag="h6" className="text-muted mb-4">
                               {`Published: ${
@@ -138,7 +144,13 @@ export const HomePosts = ({ loggedInUser }) => {
                                 <Col>
                                   <CardSubtitle
                                     tag="h6"
-                                    className="mb-2 text-muted"
+                                    className="mb-2 text-muted author-name"
+                                    onClick={(e) => {
+                                      e.stopPropagation();
+                                      navigate(
+                                        `/posts/user/${p.userProfile?.id}`
+                                      );
+                                    }}
                                   >{`Author: ${p.userProfile?.userName}`}</CardSubtitle>
                                 </Col>
                               </Row>
@@ -174,7 +186,7 @@ export const HomePosts = ({ loggedInUser }) => {
                               <img
                                 alt={`Image for the post ${p.title}`}
                                 src={p.imageUrl}
-                                className="img-fluid"
+                                className="img-fluid "
                               />
                             </Col>
                           )}
@@ -189,7 +201,11 @@ export const HomePosts = ({ loggedInUser }) => {
           <Col md={3}>
             <div id="newAuthorsContainer">
               {newAuthors.map((a) => (
-                <Card key={a.id} className="mb-3">
+                <Card
+                  key={a.id}
+                  className="mb-3 postCard-hover"
+                  onClick={() => navigate(`/posts/user/${a.id}`)}
+                >
                   <CardBody>
                     <Row className="d-flex">
                       <Col className="d-flex align-items-center">

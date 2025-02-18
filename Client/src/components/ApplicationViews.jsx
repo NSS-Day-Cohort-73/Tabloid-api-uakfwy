@@ -15,6 +15,7 @@ import ReactionsList from "./reactions/ReactionsList";
 import CreateTag from "./tags/CreateTag";
 import ManagePosts from "./posts/ManagePosts";
 import { ExplorePosts } from "./posts/ExplorePosts";
+import { UserProfilePosts } from "./posts/UserProfilePosts";
 
 export default function ApplicationViews({ loggedInUser, setLoggedInUser }) {
   return (
@@ -45,7 +46,14 @@ export default function ApplicationViews({ loggedInUser, setLoggedInUser }) {
               </AuthorizedRoute>
             }
           />
-
+          <Route
+            path="user/:id"
+            element={
+              <AuthorizedRoute loggedInUser={loggedInUser}>
+                <UserProfilePosts loggedInUser={loggedInUser} />
+              </AuthorizedRoute>
+            }
+          />
           <Route
             path="new"
             element={

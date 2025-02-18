@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { getPostById } from "../../managers/postManager";
 import "../../styles/posts.css";
 import {
@@ -38,6 +38,8 @@ export const PostDetails = ({ loggedInUser }) => {
 
   const { id } = useParams();
   const toggle = () => setModal(!modal);
+
+  const navigate = useNavigate();
 
   useEffect(() => {
     getPostById(id).then(setPost);
@@ -170,8 +172,18 @@ export const PostDetails = ({ loggedInUser }) => {
               alt={`${post.userProfile?.userName} profile picture`}
               src={post.userProfile?.imageLocation}
               className="post-details-author-image"
+              onClick={(e) => {
+                navigate(`/posts/user/${post.userProfile?.id}`);
+              }}
             />
-            <p className="text-muted">{post?.userProfile?.userName}</p>
+            <p
+              className="text-muted author-name"
+              onClick={(e) => {
+                navigate(`/posts/user/${post.userProfile?.id}`);
+              }}
+            >
+              {post?.userProfile?.userName}
+            </p>
           </Col>
           <Col className="d-flex align-items-center justify-content-end">
             <p className="text-muted">{post.publishDate?.split("T")[0]}</p>
