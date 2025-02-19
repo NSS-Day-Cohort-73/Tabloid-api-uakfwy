@@ -17,7 +17,7 @@ public class PostTagController : ControllerBase
 
     [HttpPost]
     [Authorize]
-    public IActionResult NewPostTag([FromBody] PostTag postTag) //Need to add a way to prevent posting a PostTag if that relationship already exists
+    public IActionResult NewPostTag([FromBody] PostTag postTag) 
     {
         try 
         {
