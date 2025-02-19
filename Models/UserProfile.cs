@@ -23,6 +23,8 @@ public class UserProfile
 
     public DateTime CreateDateTime { get; set; }
 
+    public bool IsActive { get; set; } = true;
+
     [DataType(DataType.Url)]
     [MaxLength(255)]
     public string ImageLocation { get; set; }
