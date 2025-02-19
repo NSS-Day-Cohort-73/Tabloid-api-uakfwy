@@ -15,3 +15,30 @@ export const getProfilesWithCount = async (profileCount) => {
   }
   return response.json();
 };
+
+//Promotes a UserProfile from an Author to an Admin
+//Expects the IdentityUser GUID format Id
+export const promoteUser = async (identityUserId) => {
+  const response = await fetch(`${_apiUrl}/promote/${identityUserId}`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+
+  if (!response.ok) {
+    throw new Error(`HTTP Error! Status ${response.status}`);
+  }
+};
+
+export const demoteUser = async (identityUserId) => {
+  const response = await fetch(`${_apiUrl}/demote/${identityUserId}`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+  if (!response.ok) {
+    throw new Error(`HTTP Error! Status ${response.status}`);
+  }
+};
