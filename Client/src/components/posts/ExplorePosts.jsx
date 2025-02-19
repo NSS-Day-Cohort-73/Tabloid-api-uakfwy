@@ -1,31 +1,41 @@
 import { useEffect, useState } from "react";
 import {
+  deletePost,
   getAllPosts,
   getPostsByCategoryId,
   getTagCatFilteredPosts,
 } from "../../managers/postManager";
 import { getTags } from "../../managers/tagManager";
 import {
+  Button,
   Card,
   CardBody,
   CardSubtitle,
   CardText,
   CardTitle,
   Col,
+  Modal,
+  ModalBody,
+  ModalFooter,
+  ModalHeader,
   Row,
 } from "reactstrap";
 import { useNavigate } from "react-router-dom";
 import "../../styles/tags.css";
 import "../../styles/posts.css";
 import CategoryDropdownFilter from "../category/CategoryDropdownFilter";
-export const ExplorePosts = () => {
+export const ExplorePosts = ({ loggedInUser }) => {
   const [allPosts, setAllPosts] = useState([]);
   const [filteredPosts, setFilteredPosts] = useState([]);
   const [tags, setTags] = useState([]);
   const [selectedTagId, setSelectedTagId] = useState(0);
   const [selectedCategoryId, setSelectedCategoryId] = useState(0);
+  const [modal, setModal] = useState(false);
+  const [modalTarget, setModalTarget] = useState({});
 
   const navigate = useNavigate();
+
+  const toggle = () => setModal(!modal);
 
   useEffect(() => {
     getAllPosts().then(setAllPosts);
@@ -66,6 +76,16 @@ export const ExplorePosts = () => {
 
     fetchPosts();
   }, [selectedCategoryId, selectedTagId]);
+
+  const handleDeletePost = (postId) => {
+    deletePost(postId)
+      .then(() => getAllPosts())
+      .then((posts) => {
+        setAllPosts(posts);
+        setFilteredPosts(posts);
+        return posts;
+      });
+  };
 
   return (
     <div className="container mt-5">
@@ -152,6 +172,19 @@ export const ExplorePosts = () => {
                       <CardText className="text-muted">{`Read Time: ${handleReadTimeCalc(
                         p.body
                       )}`}</CardText>
+                      {(loggedInUser.roles?.includes("Admin") ||
+                        p.userProfileId === parseInt(loggedInUser.id)) && (
+                        <Button
+                          className="my-post-delete"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setModalTarget(p);
+                            toggle();
+                          }}
+                        >
+                          Delete Post
+                        </Button>
+                      )}
                     </Col>
                   </Row>
                 </CardBody>
@@ -160,6 +193,26 @@ export const ExplorePosts = () => {
           ))}
         </Col>
       </Row>
+      <Modal isOpen={modal} toggle={toggle}>
+        <ModalHeader toggle={toggle}>
+          {`Delete ${modalTarget.title}?`}
+        </ModalHeader>
+        <ModalBody>Are you sure you want to delete this post?</ModalBody>
+        <ModalFooter>
+          <Button
+            className="my-post-delete"
+            onClick={() => {
+              handleDeletePost(modalTarget.id);
+              toggle();
+            }}
+          >
+            Delete
+          </Button>
+          <Button className="my-post-edit" onClick={toggle}>
+            Cancel
+          </Button>
+        </ModalFooter>
+      </Modal>
     </div>
   );
 };

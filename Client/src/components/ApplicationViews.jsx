@@ -34,7 +34,7 @@ export default function ApplicationViews({ loggedInUser, setLoggedInUser }) {
             index
             element={
               <AuthorizedRoute loggedInUser={loggedInUser}>
-                <ExplorePosts />
+                <ExplorePosts loggedInUser={loggedInUser} />
               </AuthorizedRoute>
             }
           />
@@ -73,7 +73,7 @@ export default function ApplicationViews({ loggedInUser, setLoggedInUser }) {
           <Route
             path="manage"
             element={
-              <AuthorizedRoute loggedInUser={loggedInUser}>
+              <AuthorizedRoute loggedInUser={loggedInUser} roles={["Admin"]}>
                 <ManagePosts />
               </AuthorizedRoute>
             }

@@ -178,7 +178,8 @@ export default function CommentList({ loggedInUser, postId }) {
                   >
                     {c.body}
                   </p>
-                  {c.userProfileId === loggedInUser.id && (
+                  {(c.userProfileId === loggedInUser.id ||
+                    loggedInUser.roles?.includes("Admin")) && (
                     <div className="d-flex gap-2 ms-3">
                       <button
                         className="border rounded"
