@@ -1,6 +1,10 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { getProfile } from "../../managers/userProfileManager";
+import {
+  demoteUser,
+  getProfile,
+  promoteUser,
+} from "../../managers/userProfileManager";
 import { Button } from "reactstrap";
 
 export default function UserProfileDetails({ loggedInUser }) {
@@ -12,15 +16,41 @@ export default function UserProfileDetails({ loggedInUser }) {
     getProfile(id).then(setUserProfile);
   }, [id]);
 
+  const handleUpdateUserRole = (userProfile) => {
+    if (userProfile.roles?.includes("Admin")) {
+      demoteUser(userProfile.identityUserId)
+        .then(() => getProfile(id))
+        .then(setUserProfile);
+    } else {
+      promoteUser(userProfile.identityUserId)
+        .then(() => getProfile(id))
+        .then(setUserProfile);
+    }
+  };
+
   const renderPromoteDemoteButton = () => {
     if (
       loggedInUser.id !== parseInt(id) &&
       loggedInUser.roles?.includes("Admin")
     ) {
       if (userProfile.roles?.includes("Admin")) {
-        return <Button>Demote</Button>;
+        return (
+          <Button
+            className="my-post-delete"
+            onClick={() => handleUpdateUserRole(userProfile)}
+          >
+            Demote
+          </Button>
+        );
       } else {
-        return <Button>Promote</Button>;
+        return (
+          <Button
+            className="my-post-edit"
+            onClick={() => handleUpdateUserRole(userProfile)}
+          >
+            Promote
+          </Button>
+        );
       }
     }
   };
@@ -64,7 +94,7 @@ export default function UserProfileDetails({ loggedInUser }) {
               </p>
               <p>
                 <span
-                  className="badge ms-2"
+                  className="badge"
                   style={{
                     backgroundColor: "#5bb8a6",
                     color: "white",
