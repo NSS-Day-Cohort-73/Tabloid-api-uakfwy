@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Tabloid.Data;
 using Tabloid.Models;
+using Tabloid.Models.DTOs;
 
 namespace Tabloid.Controllers;
 
@@ -44,7 +45,7 @@ public class UserProfileController : ControllerBase
             _dbContext
                 .UserProfiles.Include(up => up.IdentityUser)
                 .OrderBy(u => u.FirstName)
-                .Select(up => new UserProfile
+                .Select(up => new UserProfileDTO
                 {
                     Id = up.Id,
                     FirstName = up.FirstName,
@@ -52,13 +53,16 @@ public class UserProfileController : ControllerBase
                     Email = up.IdentityUser.Email,
                     UserName = up.IdentityUser.UserName,
                     IdentityUserId = up.IdentityUserId,
+                    IsActive = up.IsActive,
                     Roles = _dbContext
                         .UserRoles.Where(ur => ur.UserId == up.IdentityUserId)
                         .Select(ur => _dbContext.Roles.SingleOrDefault(r => r.Id == ur.RoleId).Name)
                         .ToList(),
                 })
+                .ToList()
         );
     }
+
 
     [HttpPost("promote/{id}")]
     [Authorize(Roles = "Admin")]
@@ -105,4 +109,40 @@ public class UserProfileController : ControllerBase
             .ToList();
         return Ok(user);
     }
+
+    [Authorize(Roles = "Admin")]
+    [HttpPut("deactivate/{id}")]
+    public IActionResult DeactivateUser(int id)
+    {
+        var user = _dbContext.UserProfiles.Find(id);
+        if (user == null)
+        {
+            return NotFound();
+        }
+
+        user.IsActive = false;
+        _dbContext.SaveChanges();
+
+        return NoContent();
+    }
+
+    [Authorize(Roles = "Admin")]
+    [HttpPut("reactivate/{id}")]  
+    public IActionResult ReactivateUser(int id)
+    {
+        var user = _dbContext.UserProfiles
+            .Include(up => up.IdentityUser)
+            .FirstOrDefault(up => up.Id == id);
+
+        if (user == null)
+        {
+            return NotFound();
+        }
+
+        user.IsActive = true;
+        _dbContext.SaveChanges();
+
+        return NoContent();
+    }
+
 }

@@ -42,3 +42,23 @@ export const demoteUser = async (identityUserId) => {
     throw new Error(`HTTP Error! Status ${response.status}`);
   }
 };
+
+export const deactivateUser = async (id) => {
+  const response = await fetch(`${_apiUrl}/deactivate/${id}`, {
+    method: "PUT",
+    headers: { "Content-Type": "application/json" },
+  });
+  if (!response.ok) {
+    throw new Error(`Failed to deactivate user. Status: ${response.status}`);
+  }
+};
+
+export const reactivateUser = async (id) => {
+  const response = await fetch(`${_apiUrl}/reactivate/${id}`, {
+    method: "PUT",
+    headers: { "Content-Type": "application/json" },
+  });
+  if (!response.ok) {
+    throw new Error(`Failed to reactivate user. Status: ${response.status}`);
+  }
+};
