@@ -479,7 +479,7 @@ public class PostController : ControllerBase
     }
 
     [HttpPut("{id}/approval")]
-    [Authorize]
+    [Authorize (Roles = "Admin")]
     public IActionResult ToggleApproval(int id)
     {
         try

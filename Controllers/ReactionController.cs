@@ -39,7 +39,7 @@ public class ReactionController : ControllerBase
     }
 
     [HttpPost]
-    [Authorize]
+    [Authorize(Roles = "Admin")]
     public IActionResult PostReaction(CreateReactionDTO createReactionDTO)
     {
         Reaction reactionToAdd = new Reaction

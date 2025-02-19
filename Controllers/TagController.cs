@@ -72,7 +72,7 @@ public class TagController : ControllerBase
     }
 
     [HttpPut("{id}")]
-    [Authorize]
+    [Authorize (Roles = "Admin")]
 
     public IActionResult Put(int id, EditTagDTO tag)
     {
@@ -96,6 +96,7 @@ public class TagController : ControllerBase
     }
 
     [HttpPost]
+    [Authorize(Roles = "Admin")]
     public IActionResult Post(Tag tag)
     {
         _dbContext.Tags.Add(tag);
@@ -104,7 +105,7 @@ public class TagController : ControllerBase
     }
 
     [HttpDelete("{id}")]
-    
+    [Authorize(Roles = "Admin")]
     public IActionResult Delete(int id)
     {
         var tag = _dbContext.Tags.SingleOrDefault(t => t.Id == id);
