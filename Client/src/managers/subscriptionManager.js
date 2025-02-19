@@ -17,8 +17,11 @@ export const createSubscription = (subscription) => {
   }).then((res) => res.json());
 };
 
-export const deleteSubscription = (id) => {
-  return fetch(`${_apiUrl}/${id}`, {
-    method: "DELETE",
-  });
+export const deleteSubscription = (subscription) => {
+  return fetch(
+    `${_apiUrl}/${subscription.subscriberId}/${subscription.authorId}`,
+    {
+      method: "DELETE",
+    }
+  );
 };
