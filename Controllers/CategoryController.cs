@@ -31,7 +31,7 @@ public class CategoryController : ControllerBase
     }
 
     [HttpPost]
-    [Authorize]
+    [Authorize (Roles = "Admin")]
     public IActionResult CreateCategory(CreateCategoryDTO categoryDTO)
     {
         var category = new Category { CategoryName = categoryDTO.CategoryName };
@@ -42,7 +42,7 @@ public class CategoryController : ControllerBase
     }
 
     [HttpPut("{id}")]
-    [Authorize]
+    [Authorize (Roles = "Admin")]
     public IActionResult UpdateCategory(CreateCategoryDTO categoryDTO, int id)
     {
         Category categoryToUpdate = _dbContext.Categories.SingleOrDefault(c => c.Id == id);
@@ -60,7 +60,7 @@ public class CategoryController : ControllerBase
     }
 
     [HttpDelete("{id}")]
-    [Authorize]
+    [Authorize (Roles = "Admin")]
     public IActionResult DeleteCategory(int id)
     {
         Category categoryToDelete = _dbContext.Categories.SingleOrDefault(c => c.Id == id);
