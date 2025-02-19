@@ -50,11 +50,13 @@ public class SubscriptionController : ControllerBase
         return Created($"/api/subscription/{subscriptionToAdd.Id}", subscriptionToAdd);
     }
 
-    [HttpDelete("{id}")]
+    [HttpDelete("{userId}/{authorId}")]
     [Authorize]
-    public IActionResult DeleteSubscription(int id)
+    public IActionResult DeleteSubscription(int userId, int authorId)
     {
-        var subscription = _dbContext.Subscriptions.SingleOrDefault(s => s.SubscriberId == id);
+        var subscription = _dbContext.Subscriptions.SingleOrDefault(s =>
+            s.SubscriberId == userId && s.AuthorId == authorId
+        );
 
         if (subscription == null)
         {
