@@ -184,7 +184,7 @@ public class TabloidDbContext : IdentityDbContext<IdentityUser>
                         ImageLocation =
                             "https://robohash.org/deseruntutipsum.png?size=150x150&set=set1",
                         IdentityUserId = "c806cfae-bda9-47c5-8473-dd52fd056a9b",
-                        IsActive = true
+                        IsActive = true,
                     },
                     new UserProfile
                     {
