@@ -22,15 +22,16 @@ public class UserProfileController : ControllerBase
     [Authorize]
     public IActionResult Get([FromQuery] int? authorCount)
     {
-        IQueryable<UserProfile> userProfiles = _dbContext.UserProfiles.Include(up => up.IdentityUser);
+        IQueryable<UserProfile> userProfiles = _dbContext.UserProfiles.Include(up =>
+            up.IdentityUser
+        );
 
         if (authorCount.HasValue)
         {
             userProfiles = userProfiles
-            .Where(up => _dbContext.Posts
-                .Any(p => p.UserProfileId == up.Id))
-            .OrderByDescending(up => up.CreateDateTime)
-            .Take(authorCount.Value);
+                .Where(up => _dbContext.Posts.Any(p => p.UserProfileId == up.Id))
+                .OrderByDescending(up => up.CreateDateTime)
+                .Take(authorCount.Value);
         }
 
         return Ok(userProfiles);
@@ -79,6 +80,13 @@ public class UserProfileController : ControllerBase
         IdentityUserRole<string> userRole = _dbContext.UserRoles.SingleOrDefault(ur =>
             ur.RoleId == role.Id && ur.UserId == id
         );
+
+        int adminCount = _dbContext.UserRoles.Count(ur => ur.RoleId == role.Id);
+
+        if (adminCount <= 1)
+        {
+            return BadRequest("Cannot remove the last admin user");
+        }
 
         _dbContext.UserRoles.Remove(userRole);
         _dbContext.SaveChanges();
