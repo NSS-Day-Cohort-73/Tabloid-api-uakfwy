@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Tabloid.Data;
 using Tabloid.Models;
+using Tabloid.Models.DTOs;
 
 namespace Tabloid.Controllers;
 
@@ -77,14 +78,22 @@ public class UserProfileController : ControllerBase
     public IActionResult InitializeDemotion(string id, [FromQuery, Required] int currentUserId)
     {
 
-        UserProfile currentUser = _dbContext.UserProfiles.SingleOrDefault(up => up.Id == currentUserId);
+        UserProfile currentUser = _dbContext.UserProfiles
+            .Include(up => up.IdentityUser)
+            .SingleOrDefault(up => up.Id == currentUserId);
+        IdentityRole adminRole = _dbContext
+            .Roles
+            .SingleOrDefault(r => r.Name == "Admin");
+        IdentityUserRole<string> currentUserRole = _dbContext
+            .UserRoles
+            .SingleOrDefault(ur => ur.RoleId == adminRole.Id && ur.UserId == currentUser.IdentityUserId);
 
         if (currentUser == null)
         {
             return NotFound("Current User does not exist");
         }
         //Checks if initiator has the role admin
-        if (!currentUser.Roles.Contains("Admin"))
+        if (currentUserRole == null)
         {
             return Forbid();
         }
@@ -124,7 +133,7 @@ public class UserProfileController : ControllerBase
         _dbContext.AdminActions.Add(action);
         _dbContext.SaveChanges();
 
-        return Ok(new { message = "Demotion initiated, awaiting second admin approval"});
+        return Ok(new { message = "Demotion initiated, awaiting second admin approval", action = new AdminActionDTO(action)});
 
     }
 
@@ -145,12 +154,20 @@ public class UserProfileController : ControllerBase
         //find the voting admin and makes sure they exist, and that they are an admin
         UserProfile votingAdmin = _dbContext.UserProfiles.SingleOrDefault(up => up.Id == currentUserId);
 
+        IdentityRole adminRole = _dbContext
+        .Roles
+        .SingleOrDefault(r => r.Name == "Admin");
+        
+        IdentityUserRole<string> currentUserRole = _dbContext
+        .UserRoles
+        .SingleOrDefault(ur => ur.RoleId == adminRole.Id && ur.UserId == votingAdmin.IdentityUserId);
+
         if (votingAdmin == null)
         {
             return NotFound("That Admin does not exist");
         }
 
-        if (!votingAdmin.Roles.Contains("Admin"))
+        if (currentUserRole == null)
         {
             return Forbid();
         }
@@ -195,7 +212,24 @@ public class UserProfileController : ControllerBase
         } 
         
         _dbContext.SaveChanges();
-        return Ok(new {message = "Vote Recorded", action.Status});
+        return Ok(new {message = "Vote Recorded", action = new AdminActionDTO(action)});
+    }
+
+    [HttpGet("/pending/{userId}")]
+    [Authorize(Roles = "Admin")]
+    public IActionResult PendingActions(int userId)
+    {
+        AdminAction pendingActions = _dbContext
+        .AdminActions
+        .Include(a => a.Votes)
+        .FirstOrDefault(a => a.TargetUserId == userId && a.Status == ActionStatus.Pending);
+
+        if (pendingActions == null)
+        {
+            return NotFound("Current User has no pending actions");
+        }
+
+        return Ok(new AdminActionDTO(pendingActions));
     }
     
     [Authorize]

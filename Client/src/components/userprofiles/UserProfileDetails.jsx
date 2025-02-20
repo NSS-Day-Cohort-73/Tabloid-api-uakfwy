@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import {
-  demoteUser,
+  //demoteUser,
   getProfile,
   promoteUser,
 } from "../../managers/userProfileManager";
@@ -18,6 +18,7 @@ export default function UserProfileDetails({ loggedInUser }) {
 
   const handleUpdateUserRole = (userProfile) => {
     if (userProfile.roles?.includes("Admin")) {
+      //This is another if statement to check if this user has any votes
       demoteUser(userProfile.identityUserId)
         .then(() => getProfile(id))
         .then(setUserProfile);
