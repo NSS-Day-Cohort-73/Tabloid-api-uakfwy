@@ -88,7 +88,7 @@ export const ExplorePosts = ({ loggedInUser }) => {
   };
 
   return (
-    <div className="container mt-5">
+    <div className="container mt-5" style={{ width: "80%", margin: "0, auto" }}>
       <div className="mb-5">
         <>
           {
@@ -101,7 +101,7 @@ export const ExplorePosts = ({ loggedInUser }) => {
         </>
       </div>
       <Row className="explore-container">
-        <Col className="explore-tags">
+        <Col className="explore-tags" style={{ width: "20%" }}>
           <h4 className="mb-4">Search by Tag</h4>
           <Card
             className={`mb-4 text-center tag-choice ${
@@ -121,7 +121,9 @@ export const ExplorePosts = ({ loggedInUser }) => {
               }`}
               onClick={() => setSelectedTagId(t.id)}
             >
-              <CardBody tag="h4">{t.tagName}</CardBody>
+              <CardBody tag="h4" className="responsive-text">
+                {t.tagName}
+              </CardBody>
             </Card>
           ))}
         </Col>
