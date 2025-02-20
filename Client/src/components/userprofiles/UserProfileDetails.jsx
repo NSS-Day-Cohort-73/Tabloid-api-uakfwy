@@ -13,7 +13,6 @@ import { Button } from "reactstrap";
 export default function UserProfileDetails({ loggedInUser }) {
   const [userProfile, setUserProfile] = useState();
   const [pendingActions, setPendingActions] = useState([]);
-  const [currentUserAction, setCurrentUserAction] = useState({ id: 0 });
 
   const { id } = useParams();
 
@@ -23,11 +22,11 @@ export default function UserProfileDetails({ loggedInUser }) {
 
   useEffect(() => {
     getUserPendingAction(id).then(setPendingActions);
-  }, [pendingActions.length]);
+  }, [id]);
 
   const handleUpdateUserRole = (userProfile) => {
     if (userProfile.roles?.includes("Admin")) {
-      if (currentUserAction.id === 0) {
+      if (pendingActions.length === 0) {
         initializeDemote(userProfile.identityUserId, loggedInUser.id)
           .then((response) => {
             setCurrentUserAction(response);
@@ -35,7 +34,7 @@ export default function UserProfileDetails({ loggedInUser }) {
           .then(() => getProfile(id))
           .then(setUserProfile);
       } else {
-        voteToDemote(currentUserAction.id, loggedInUser.id)
+        voteToDemote(pendingActions.id, loggedInUser.id)
           .then(() => getProfile(id))
           .then(setUserProfile);
       }
@@ -52,7 +51,7 @@ export default function UserProfileDetails({ loggedInUser }) {
       loggedInUser.roles?.includes("Admin")
     ) {
       if (userProfile.roles?.includes("Admin")) {
-        if (currentUserAction.id === 0) {
+        if (pendingActions.length === 0) {
           return (
             <Button
               className="my-post-delete"
@@ -61,8 +60,15 @@ export default function UserProfileDetails({ loggedInUser }) {
               Demote
             </Button>
           );
-        } else if (currentUserAction.id !== 0) {
-          return <Button className="my-post-delete">Vote To Demote</Button>;
+        } else if (pendingActions.length !== 0) {
+          return (
+            <Button
+              className="my-post-delete"
+              onClick={() => handleUpdateUserRole(userProfile)}
+            >
+              Vote To Demote
+            </Button>
+          );
         }
       } else {
         return (

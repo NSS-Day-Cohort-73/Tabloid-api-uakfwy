@@ -226,7 +226,7 @@ public class UserProfileController : ControllerBase
         return Ok(new {message = "Vote Recorded", action = new AdminActionDTO(action)});
     }
 
-    [HttpGet("/pending/{userId}")]
+    [HttpGet("pending/{userId}")]
     [Authorize(Roles = "Admin")]
     public IActionResult PendingActions(int userId)
     {
