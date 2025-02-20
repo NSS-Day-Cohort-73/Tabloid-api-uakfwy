@@ -13,6 +13,7 @@ export default function Register({ setLoggedInUser }) {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [errors, setErrors] = useState([]);
+  const [selectedImage, setSelectedImage] = useState(null);
 
   const [passwordMismatch, setPasswordMismatch] = useState();
 
@@ -91,7 +92,13 @@ export default function Register({ setLoggedInUser }) {
         />
       </FormGroup>
       <FormGroup>
-        {<ImgurUploader onImageUpload={handleImageUpload} />}
+        {
+          <ImgurUploader
+            onImageUpload={handleImageUpload}
+            selectedImage={selectedImage}
+            setSelectedImage={setSelectedImage}
+          />
+        }
       </FormGroup>
       <FormGroup>
         <Label>Password</Label>
@@ -126,7 +133,7 @@ export default function Register({ setLoggedInUser }) {
       <Button
         color="primary"
         onClick={handleSubmit}
-        disabled={passwordMismatch}
+        disabled={passwordMismatch || !imageLocation}
       >
         Register
       </Button>

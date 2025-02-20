@@ -1,7 +1,10 @@
 import React, { useState } from "react";
 
-export default function ImgurUploader({ onImageUpload }) {
-  const [selectedImage, setSelectedImage] = useState(null);
+export default function ImgurUploader({
+  onImageUpload,
+  selectedImage,
+  setSelectedImage,
+}) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [uploadSuccess, setUploadSuccess] = useState(false);

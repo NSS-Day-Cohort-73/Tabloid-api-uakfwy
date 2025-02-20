@@ -10,6 +10,7 @@ export const NewPost = ({ loggedInUser }) => {
   const [categories, setCategories] = useState([]);
   const [newPost, setNewPost] = useState({});
   const [postImage, setPostImage] = useState("");
+  const [selectedImage, setSelectedImage] = useState(null);
 
   const navigate = useNavigate();
 
@@ -122,13 +123,20 @@ export const NewPost = ({ loggedInUser }) => {
           </Row>
         </FormGroup>
         <FormGroup>
-          {<ImgurUploader onImageUpload={handleImageUpload} />}
+          {
+            <ImgurUploader
+              onImageUpload={handleImageUpload}
+              selectedImage={selectedImage}
+              setSelectedImage={setSelectedImage}
+            />
+          }
         </FormGroup>
         <FormGroup>
           <Button
             className="mt-5"
             color="dark"
             onClick={(e) => handleCreatePost(e)}
+            disabled={!postImage}
           >
             Submit
           </Button>
