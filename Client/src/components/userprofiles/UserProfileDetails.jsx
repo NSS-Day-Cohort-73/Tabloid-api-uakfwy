@@ -1,14 +1,19 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import {
-  demoteUser,
   getProfile,
+  getUserPendingAction,
+  initializeDemote,
   promoteUser,
+  voteToDemote,
 } from "../../managers/userProfileManager";
-import { Button } from "reactstrap";
+import { Alert, Button } from "reactstrap";
 
 export default function UserProfileDetails({ loggedInUser }) {
   const [userProfile, setUserProfile] = useState();
+  const [pendingActions, setPendingActions] = useState({});
+  const [showAlert, setShowAlert] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
 
   const { id } = useParams();
 
@@ -16,15 +21,46 @@ export default function UserProfileDetails({ loggedInUser }) {
     getProfile(id).then(setUserProfile);
   }, [id]);
 
-  const handleUpdateUserRole = (userProfile) => {
+  useEffect(() => {
+    const fetchPendingActions = async () => {
+      const data = await getUserPendingAction(id);
+      console.log("Initial pending actions:", data);
+      setPendingActions(data);
+    };
+    fetchPendingActions();
+  }, [id]);
+
+  const handleUpdateUserRole = async (userProfile) => {
     if (userProfile.roles?.includes("Admin")) {
-      demoteUser(userProfile.identityUserId)
-        .then(() => getProfile(id))
-        .then(setUserProfile);
+      if (Object.keys(pendingActions).length === 0) {
+        await initializeDemote(userProfile.identityUserId, loggedInUser.id);
+        const updatedProfile = await getProfile(id);
+        setUserProfile(updatedProfile);
+
+        const newPendingAction = await getUserPendingAction(id);
+        setPendingActions(newPendingAction);
+      } else {
+        const voteResponse = await voteToDemote(
+          pendingActions.id,
+          loggedInUser.id
+        );
+        if (voteResponse.error) {
+          setShowAlert(true);
+          setErrorMessage(voteResponse.error);
+        }
+        const updatedProfile = await getProfile(id);
+        setUserProfile(updatedProfile);
+
+        const updatedPendingActions = await getUserPendingAction(id);
+        setPendingActions(updatedPendingActions);
+      }
     } else {
       promoteUser(userProfile.identityUserId)
         .then(() => getProfile(id))
-        .then(setUserProfile);
+        .then(setUserProfile)
+        .then(() => {
+          setPendingActions({});
+        });
     }
   };
 
@@ -34,14 +70,25 @@ export default function UserProfileDetails({ loggedInUser }) {
       loggedInUser.roles?.includes("Admin")
     ) {
       if (userProfile.roles?.includes("Admin")) {
-        return (
-          <Button
-            className="my-post-delete"
-            onClick={() => handleUpdateUserRole(userProfile)}
-          >
-            Demote
-          </Button>
-        );
+        if (Object.keys(pendingActions).length === 0) {
+          return (
+            <Button
+              className="my-post-delete"
+              onClick={() => handleUpdateUserRole(userProfile)}
+            >
+              Demote
+            </Button>
+          );
+        } else {
+          return (
+            <Button
+              className="my-post-delete"
+              onClick={() => handleUpdateUserRole(userProfile)}
+            >
+              Vote To Demote
+            </Button>
+          );
+        }
       } else {
         return (
           <Button
@@ -105,6 +152,7 @@ export default function UserProfileDetails({ loggedInUser }) {
               </p>
             </div>
             {renderPromoteDemoteButton()}
+            {showAlert ? <Alert className="mt-3">{errorMessage}</Alert> : ""}
           </div>
         </div>
       </div>
