@@ -2,6 +2,7 @@ import { useState } from "react";
 import { register } from "../../managers/authManager";
 import { Link, useNavigate } from "react-router-dom";
 import { Button, FormFeedback, FormGroup, Input, Label } from "reactstrap";
+import ImgurUploader from "../imageHandling/ImgurUploader";
 
 export default function Register({ setLoggedInUser }) {
   const [firstName, setFirstName] = useState("");
@@ -12,6 +13,7 @@ export default function Register({ setLoggedInUser }) {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [errors, setErrors] = useState([]);
+  const [selectedImage, setSelectedImage] = useState(null);
 
   const [passwordMismatch, setPasswordMismatch] = useState();
 
@@ -40,6 +42,10 @@ export default function Register({ setLoggedInUser }) {
         }
       });
     }
+  };
+
+  const handleImageUpload = (imageUrl) => {
+    setImageLocation(imageUrl);
   };
 
   return (
@@ -86,14 +92,13 @@ export default function Register({ setLoggedInUser }) {
         />
       </FormGroup>
       <FormGroup>
-        <Label>Image URL</Label>
-        <Input
-          type="text"
-          value={imageLocation}
-          onChange={(e) => {
-            setImageLocation(e.target.value);
-          }}
-        />
+        {
+          <ImgurUploader
+            onImageUpload={handleImageUpload}
+            selectedImage={selectedImage}
+            setSelectedImage={setSelectedImage}
+          />
+        }
       </FormGroup>
       <FormGroup>
         <Label>Password</Label>
@@ -128,7 +133,7 @@ export default function Register({ setLoggedInUser }) {
       <Button
         color="primary"
         onClick={handleSubmit}
-        disabled={passwordMismatch}
+        disabled={passwordMismatch || (selectedImage && !postImage)}
       >
         Register
       </Button>

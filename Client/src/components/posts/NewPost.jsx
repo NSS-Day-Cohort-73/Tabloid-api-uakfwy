@@ -4,10 +4,13 @@ import { useEffect, useState } from "react";
 import { getAllCategories } from "../../managers/categoryManager";
 import { useNavigate } from "react-router-dom";
 import { addNewPost } from "../../managers/postManager";
+import ImgurUploader from "../imageHandling/ImgurUploader";
 
 export const NewPost = ({ loggedInUser }) => {
   const [categories, setCategories] = useState([]);
   const [newPost, setNewPost] = useState({});
+  const [postImage, setPostImage] = useState("");
+  const [selectedImage, setSelectedImage] = useState(null);
 
   const navigate = useNavigate();
 
@@ -28,11 +31,15 @@ export const NewPost = ({ loggedInUser }) => {
     const newPostDetails = {
       ...newPost,
       categoryId: parseInt(newPost.categoryId),
-      imageUrl: null,
+      imageUrl: postImage,
     };
     addNewPost(loggedInUser.id, newPostDetails).then((response) =>
       navigate(`/posts/${response.id}`)
     );
+  };
+
+  const handleImageUpload = (imageUrl) => {
+    setPostImage(imageUrl);
   };
 
   return (
@@ -116,10 +123,20 @@ export const NewPost = ({ loggedInUser }) => {
           </Row>
         </FormGroup>
         <FormGroup>
+          {
+            <ImgurUploader
+              onImageUpload={handleImageUpload}
+              selectedImage={selectedImage}
+              setSelectedImage={setSelectedImage}
+            />
+          }
+        </FormGroup>
+        <FormGroup>
           <Button
             className="mt-5"
             color="dark"
             onClick={(e) => handleCreatePost(e)}
+            disabled={selectedImage && !postImage}
           >
             Submit
           </Button>
