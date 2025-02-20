@@ -133,7 +133,7 @@ export default function Register({ setLoggedInUser }) {
       <Button
         color="primary"
         onClick={handleSubmit}
-        disabled={passwordMismatch || !imageLocation}
+        disabled={passwordMismatch || (selectedImage && !postImage)}
       >
         Register
       </Button>

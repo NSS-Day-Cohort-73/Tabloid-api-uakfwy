@@ -136,7 +136,7 @@ export const NewPost = ({ loggedInUser }) => {
             className="mt-5"
             color="dark"
             onClick={(e) => handleCreatePost(e)}
-            disabled={!postImage}
+            disabled={selectedImage && !postImage}
           >
             Submit
           </Button>
