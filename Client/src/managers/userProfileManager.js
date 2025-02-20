@@ -43,8 +43,12 @@ export const getUserPendingAction = async (userId) => {
   if (response.status === 404) {
     return null;
   }
+  const data = response.json();
+  // if (!data || Object.keys(data).length === 0) {
+  //   return null;
+  // }
 
-  return response.json();
+  return data;
 };
 
 //Initializes an Admin Action to demote a user.
@@ -79,7 +83,15 @@ export const voteToDemote = async (actionId, currentUserId) => {
     }
   );
   if (!response.ok) {
-    throw new Error(`HTTP Error! Status ${response.status}`);
+    let errorMessage = `HTTP Error! Status ${response.status}`;
+
+    try {
+      const errorData = await response.text();
+      errorMessage = errorData || errorMessage;
+    } catch (error) {
+      console.error("Failed to parse error response", error);
+    }
+    return { error: errorMessage };
   }
   if (response.status === 204) {
     return { message: "User has been demoted" };
