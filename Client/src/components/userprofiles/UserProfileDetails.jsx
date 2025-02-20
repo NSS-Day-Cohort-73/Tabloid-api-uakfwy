@@ -3,12 +3,17 @@ import { useParams } from "react-router-dom";
 import {
   //demoteUser,
   getProfile,
+  getUserPendingAction,
+  initializeDemote,
   promoteUser,
+  voteToDemote,
 } from "../../managers/userProfileManager";
 import { Button } from "reactstrap";
 
 export default function UserProfileDetails({ loggedInUser }) {
   const [userProfile, setUserProfile] = useState();
+  const [pendingActions, setPendingActions] = useState([]);
+  const [currentUserAction, setCurrentUserAction] = useState({ id: 0 });
 
   const { id } = useParams();
 
@@ -16,12 +21,24 @@ export default function UserProfileDetails({ loggedInUser }) {
     getProfile(id).then(setUserProfile);
   }, [id]);
 
+  useEffect(() => {
+    getUserPendingAction(id).then(setPendingActions);
+  }, [pendingActions.length]);
+
   const handleUpdateUserRole = (userProfile) => {
     if (userProfile.roles?.includes("Admin")) {
-      //This is another if statement to check if this user has any votes
-      demoteUser(userProfile.identityUserId)
-        .then(() => getProfile(id))
-        .then(setUserProfile);
+      if (currentUserAction.id === 0) {
+        initializeDemote(userProfile.identityUserId, loggedInUser.id)
+          .then((response) => {
+            setCurrentUserAction(response);
+          })
+          .then(() => getProfile(id))
+          .then(setUserProfile);
+      } else {
+        voteToDemote(currentUserAction.id, loggedInUser.id)
+          .then(() => getProfile(id))
+          .then(setUserProfile);
+      }
     } else {
       promoteUser(userProfile.identityUserId)
         .then(() => getProfile(id))
@@ -35,14 +52,18 @@ export default function UserProfileDetails({ loggedInUser }) {
       loggedInUser.roles?.includes("Admin")
     ) {
       if (userProfile.roles?.includes("Admin")) {
-        return (
-          <Button
-            className="my-post-delete"
-            onClick={() => handleUpdateUserRole(userProfile)}
-          >
-            Demote
-          </Button>
-        );
+        if (currentUserAction.id === 0) {
+          return (
+            <Button
+              className="my-post-delete"
+              onClick={() => handleUpdateUserRole(userProfile)}
+            >
+              Demote
+            </Button>
+          );
+        } else if (currentUserAction.id !== 0) {
+          return <Button className="my-post-delete">Vote To Demote</Button>;
+        }
       } else {
         return (
           <Button
